@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset    = "UTF-8">
+    <meta http-equiv = "X-UA-Compatible" content = "IE=edge">
+    <meta name       = "viewport" content        = "width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles/app.css">
+    <script src="assets/scripts/app.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+</head>
+<body>
+    <div class="flex-container marginBtm">
+        <h1>Dinger Payment Form</h1>
+
+        <br>
+
+        <form accept-charset="UTF-8" id="create-form">
+        
+        <input name="_method" type="hidden" value="PUT">
+        <input name="_token" type="hidden" value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCGgou+Ff1dF5ZEbLwY1IO8tovHgFnO6t8qZoIb0+DnUfIBiyPs2zHGxkCSX9XsTrbv8NlrsBnwDcAMLtjbhKbnRRY47ZNuCDhl9VPbvTCbV6nO7ZyOpeDpyJ4456n4epbQo5iX5GHvyhM1/G6YhU6R73zixif1h5hxfWpte1FEawIDAQAB">
+        <input type="hidden" name="_token" value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCGgou+Ff1dF5ZEbLwY1IO8tovHgFnO6t8qZoIb0+DnUfIBiyPs2zHGxkCSX9XsTrbv8NlrsBnwDcAMLtjbhKbnRRY47ZNuCDhl9VPbvTCbV6nO7ZyOpeDpyJ4456n4epbQo5iX5GHvyhM1/G6YhU6R73zixif1h5hxfWpte1FEawIDAQAB">
+
+            <!-- <input name="_token" type="hidden" value="mt4BwpLKn0EwB2MpFvYIoepo2Qk4uwTxwfXCDAKu"> -->
+            <h2 id="frmTtl" >KyayOh Order Here</h2>
+
+            <div class="frmGrp marginBtm orderItem1">
+                <label for="main-dish">Main Dish </label>
+                <select id="main-dish" name="payment" class="form-control">
+                    <option value="0" selected>
+                        --Choose Menu--
+                    </option>
+                    <option value="1">
+                        Sichat
+                    </option>
+                    <option value="2">
+                        KyayOh Sichat
+                    </option>
+                    <option value="3">
+                        KyayOh
+                    </option>
+                </select>
+            </div>
+            <div class="frmGrp marginBtm orderItem2">
+                <label for="choose-meat">Choose Meat </label>
+                <select id="choose-meat" name="payment" class="form-control">
+                    <option value="0" selected>
+                        --Choose Meat--
+                    </option>
+                    <option value="1">
+                        Pork
+                    </option>
+                    <option value="2">
+                        Poultry
+                    </option>
+                </select>
+            </div>
+            <div class="frmGrp marginBtm orderItem3">
+                <label selected for="choose-noodle">Choose Noodle </label>
+                <select id="choose-noodle" name="payment" class="form-control">
+                    <option value="0" selected>
+                        --Choose Noodle--
+                    </option>
+                    <option value="1">
+                        Vermicelli
+                    </option>
+                    <option value="2">
+                        wheat
+                    </option>
+                </select>
+            </div>
+            <div class="frmGrp marginBtm" hidden="true">
+                <label selected for="option-customize">Dish Customization </label>
+                <select id="option-customize" name="option-customize" class="form-control">
+                    <option value="0" selected>
+                        --Choose Dish Customization--
+                    </option>
+                    <option value="1">
+                        Reduce oil
+                    </option>
+                    <option value="2">
+                        No Vege in KyayOh & KyayOhSiChat
+                    </option>
+                </select>
+            </div>
+
+            <br>
+
+            <!-- <input type="hidden" name="_token" value="0sujFPUXBNx7gq0fOWf6Wu1mIDI8fbhUNsQoSgjy"> -->
+            
+            <h2 id="frmTtl">Personal Information</h2>
+
+            <div class="frmGrp marginBtm field1">
+                    <div class="col-md-6 col-sm-6 col-6">
+                        <label>First Name <span style="color: red !important; display: inline; float: none;">*</span></label>
+                        <input placeholder="Enter your first name" name="fname" type="text" class="form-control" style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABHklEQVQ4EaVTO26DQBD1ohQWaS2lg9JybZ+AK7hNwx2oIoVf4UPQ0Lj1FdKktevIpel8AKNUkDcWMxpgSaIEaTVv3sx7uztiTdu2s/98DywOw3Dued4Who/M2aIx5lZV1aEsy0+qiwHELyi+Ytl0PQ69SxAxkWIA4RMRTdNsKE59juMcuZd6xIAFeZ6fGCdJ8kY4y7KAuTRNGd7jyEBXsdOPE3a0QGPsniOnnYMO67LgSQN9T41F2QGrQRRFCwyzoIF2qyBuKKbcOgPXdVeY9rMWgNsjf9ccYesJhk3f5dYT1HX9gR0LLQR30TnjkUEcx2uIuS4RnI+aj6sJR0AM8AaumPaM/rRehyWhXqbFAA9kh3/8/NvHxAYGAsZ/il8IalkCLBfNVAAAAABJRU5ErkJggg==&quot;); background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%;">
+                        <!-- Error -->
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-6">
+                        <label>Last Name <span style="color: red !important; display: inline; float: none;">*</span></label>
+                        <input placeholder="Enter your last name" name="lname" type="text" class="form-control">
+                        <!-- Error -->
+                    </div>
+            </div>
+            <div class="frmGrp marginBtm field2">
+                <label>Phone <span style="color: red !important; display: inline; float: none;">*</span></label>
+                <input placeholder="eg. 09787747310" name="phone" type="tel" class="form-control">
+            </div>
+            <div class="frmGrp marginBtm field3">
+                <label>Address</label>
+                <input placeholder="eg. No(70)...." name="address" type="text" class="form-control">
+            </div>
+            <div class="frmGrp marginBtm field4">
+                <label>Description</label>
+                <input placeholder="eg. your description" name="desc" type="text" class="form-control">
+            </div>
+
+            <br>
+            
+            <h2 id="frmTtl" >For Payment</h2>
+
+            <div class="frmGrp marginBtm field5">
+                <label>Amount(MMK) </label>
+                <input placeholder="eg. 10000" name="amount" type="number" class="form-control">
+            </div>
+            <div class="frmGrp marginBtm field6">
+                <label for="payment-type">Choose Payment </label>
+                <select id="payment-type" name="payment" class="form-control">
+                    <option value="">Choose Payment</option>
+                    <option value="AYA Pay">AYA Pay</option>
+                    <option value="KBZ Pay">KBZ Pay</option>
+                    <option value="MPU">MPU</option>
+                </select>
+            </div>
+            <div class="frmGrp marginBtm field7">
+                <label for="payment_method">Choose Payment Method </label>
+                <select id="payment_method" name="payment_method" class="form-control">
+                    <option value="">Choose Payment Method</option>
+                </select>
+            </div>
+            <div class="frmGrp marginBtm" id="frm_checkout">
+                <button type="submit">Submit</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+</body>
+</html>
