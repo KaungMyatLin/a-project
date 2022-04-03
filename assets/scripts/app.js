@@ -1,4 +1,8 @@
-
+const md_val_select = document.querySelector("#main_dish_div select");
+const meat_val_select = document.querySelector("#choose_meat_div select")
+const nood_val_select = document.querySelector("#choose_noodle_div select")
+let dishCustom_val_select = document.querySelector("#option_customize_div select")
+const numberofplates_val_input = document.querySelector("#quantity_div input")
 const submitfrm1 = document.querySelector("#frm1_checkout button");
 const submitfrm2 = document.querySelector("#frm2_checkout button");
 
@@ -20,8 +24,7 @@ function onLoad() {
   });
 }
 
-const cart = [];
-
+let cart = [];
 let addingToCardCountStart = 0;
 
 const getAddingCartBtnClickCount = () => {
@@ -108,11 +111,12 @@ function getRandomIntInclusive(min, max) {
 }
 
 function make_ordLst() {
-  const md_val = document.querySelector("#main_dish_div select").value;
-  const meat_val = document.querySelector("#choose_meat_div select").value;
-  const nood_val = document.querySelector("#choose_noodle_div select").value;
-  let dishCustom_val = document.querySelector("#option_customize_div select").value;
-  const numberofplates_val = document.querySelector("#quantity_div input").value;
+  const md_val = md_val_select.value;
+  const meat_val = meat_val_select.value;
+  const nood_val = nood_val_select.value;
+  let dishCustom_val = dishCustom_val_select.value;
+  const numberofplates_val = numberofplates_val_input.value;
+  console.log(md_val, meat_val, nood_val, dishCustom_val, numberofplates_val);
   
   let cartItem = {
     objec: {},
@@ -126,38 +130,30 @@ function make_ordLst() {
   };
 
   if (md_val, meat_val, nood_val, numberofplates_val == 0) {
-    // let hidInvalidWarn = document.querySelector("#hidInvalidWarn");
-    // hidInvalidWarn.hidden = false;
-    const InvalidFormWarn = document.createElement("div");
-    document.createAttribute("hidden", "true");
-    let parent = submitfrm1.parentNode;
-    parent.insertBefore(InvalidFormWarn, submitfrm1);
-    
-    return
+    let hidInvalidWarn = document.querySelector("#hidInvalidWarn");
+    hidInvalidWarn.hidden = false;
+
+    return;
   }
   else {
+    hidInvalidWarn.hidden = true;
     if (dishCustom_val == 0) dishCustom_val = null;
     const id = getRandomIntInclusive(1, 1000000000)
-    const createObj = {id, md_val, meat_val, nood_val, dishCustom_val, numberofplates_val};
-    cart.push(createObj);
+    const compareObj = {id, md_val, meat_val, nood_val, dishCustom_val, numberofplates_val};
     
-    console.log(cart.entries());
-
     if (addingToCardCountStart < 20){
-      if (cart.length == 0) cart.push(createObj);
+      if (cart.length == 0) cart.push(compareObj);
       else {
-        const index = getIdxOfTheOrderAlrdyContain(createObj, cart);
-        const returnedobj = cart[index];
-        console.log(returnedobj);
+        const el = getElOfTheOrderAlrdyContain(compareObj, cart);
 
-        if (true && returnedobj)
-        {
-          if (true && setnumberofplateInc(returnedobj)) {
-            console.log(Object.entries(Theobj));
-          }
+        if (true && el) {
+          compareObj.numberofplates_val  = parseInt(el.numberofplates_val) + parseInt(numberofplates_val) + '';
+          cart = cart.filter(t => t !== el);
+          cart.push(compareObj);
+          console.log(JSON.stringify(cart, null, "  "));
         }
         else {
-          cart.push(createObj);
+          cart.push(compareObj);
         }
       }
       addingToCardCountStart++;
@@ -169,46 +165,14 @@ function make_ordLst() {
   }
 }
 
-function getIdxOfTheOrderAlrdyContain(obj, list) {
-  return list.findIndex((t) =>
+
+function getElOfTheOrderAlrdyContain(obj, list) {
+  return list.find((t) =>
     t.md_val === obj.md_val && 
     t.meat_val === obj.meat_val &&
     t.nood_val === obj.nood_val &&
     t.dishCustom_val === obj.dishCustom_val
   ); 
-}
-
-// function getTheOrderAlredyContain(obj, list) {
-//   if (
-//     isVarAPureObj(obj)
-//     &&
-//     Array.isArray(list)
-//     )
-//   for (i = 0; i < list.length; i++) {
-//     var objIsContain;                                                 // check any True in overall whole list.
-//     var propCount = 0;                                                // check for 5 properties in each object.
-//     var propIsContain = false;                                        // check any False in overall an object.
-//     for (const [key, value] of Object.entries(list[i])) {
-//       propIsContain = value === Object.values(obj)[propCount];
-      
-//       if (propIsContain === false) {                                  // obj is different.
-//         objIsContain = false; break;
-//       }
-//       if (propCount == 4 && propIsContain)                            // search ended & overall is True.
-//         return list[i];
-//       propCount++;
-//     }
-//   }
-//   return null;
-// }
-
-function setplateIncAndReturnObj(Theobj) {
-    for (const [key, value] of Object.entries(Theobj)) {
-      if (key === "numberofplates_val") {
-        Theobj[key]++; return Theobj;
-      }
-  }
-  return null;
 }
 
 document.addEventListener("DOMContentLoaded", () => {

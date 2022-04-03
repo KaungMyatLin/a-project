@@ -21,7 +21,7 @@
 
             <div class="frmGrp marginBtm" id="main_dish_div">
                 <label for="main_dish">Main Dish <span style="color: red !important; display: inline; float: none;">*</span> </label>
-                <select id="main_dish" name="payment" class="form-control">
+                <select id="main_dish" name="payment" class="form-control" required>
                     <option value="0" selected>
                         --Choose Menu--
                     </option>
@@ -38,7 +38,7 @@
             </div>
             <div class="frmGrp marginBtm" id="choose_meat_div">
                 <label for="choose_meat">Choose Meat <span style="color: red !important; display: inline; float: none;">*</span> </label>
-                <select id="choose_meat" name="payment" class="form-control">
+                <select id="choose_meat" name="payment" class="form-control" required>
                     <option value="0" selected>
                         --Choose Meat--
                     </option>
@@ -52,7 +52,7 @@
             </div>
             <div class="frmGrp marginBtm" id="choose_noodle_div">
                 <label selected for="choose_noodle">Choose Noodle <span style="color: red !important; display: inline; float: none;">*</span> </label>
-                <select id="choose_noodle" name="payment" class="form-control">
+                <select id="choose_noodle" name="payment" class="form-control" required>
                     <option value="0" selected>
                         --Choose Noodle--
                     </option>
@@ -79,10 +79,10 @@
                 </select>
             </div>
             <div class="frmGrp marginBtm" id="quantity_div">
-                <label selected for="option_customize">Quantity <span style="color: red !important; display: inline; float: none;">*</span> </label>
-                <input placeholder="quantity" id="quantity" type="number" class="form-control">
+                <label selected for="quantity">Quantity <span style="color: red !important; display: inline; float: none;">*</span> </label>
+                <input placeholder="quantity" id="quantity" type="number" class="form-control" min="0" max="99" minlength="1" maxlength="2" value="0" required>
             </div>
-            <div id="hidInvalidWarn" hidden id="hidden_div"><label> <span style="color: red !important; display: inline; float: none;"> Please select Choices marked by {*}</span> </label></div>
+            <div id="hidInvalidWarn" hidden><label> <span style="color: red !important; display: inline; float: none;"> Please select Choices marked by {*}</span> </label></div>
             <div class="frmGrp marginBtm" id="frm1_checkout">
                 <button type="submit">Submit</button>
             </div>
