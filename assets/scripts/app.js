@@ -5,6 +5,7 @@ let dishCustom_val_select = document.querySelector("#option_customize_div select
 const numberofplates_val_input = document.querySelector("#quantity_div input")
 const submitfrm1 = document.querySelector("#frm1_checkout button");
 const submitfrm2 = document.querySelector("#frm2_checkout button");
+let hidInvalidWarn = document.querySelector("#hidInvalidWarn");
 
 function onLoad() {
   const mainDish_ddm = document.querySelector("#main_dish");
@@ -110,6 +111,21 @@ function getRandomIntInclusive(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
 }
 
+let prod_Temp = {
+    md_val: {
+      Sichat: 'Sichat',
+      'KyayOh Sichat': 'KyayOh Sichat',
+    },
+    meat_val: {
+      Pork: 'Pork',
+      Poultry: 'Poultry',
+    },
+    nood_val: {
+      Vermicelli: 'Vermicelli',
+      Wheat: 'Wheat',
+    },
+  }
+
 function make_ordLst() {
   const md_val = md_val_select.value;
   const meat_val = meat_val_select.value;
@@ -118,49 +134,68 @@ function make_ordLst() {
   const numberofplates_val = numberofplates_val_input.value;
   console.log(md_val, meat_val, nood_val, dishCustom_val, numberofplates_val);
   
-  let cartItem = {
-    objec: {},
+  // let cartItem = {
+  //   objec: {},
 
-    get getGetter() {
-      return this.objec;
-    },
-    set setSetter(set) {
-      this.objec = set;
-    }
-  };
+  //   get getGetter() {
+  //     return this.objec;
+  //   },
+  //   set setSetter(set) {
+  //     this.objec = set;
+  //   }
+  // };
 
+  // if user doesn't select any, show hidden warning.
   if (md_val, meat_val, nood_val, numberofplates_val == 0) {
-    let hidInvalidWarn = document.querySelector("#hidInvalidWarn");
+    hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> Please select Choices marked by {*}</span> </label></div>`;
     hidInvalidWarn.hidden = false;
 
     return;
   }
   else {
     hidInvalidWarn.hidden = true;
+
+    // if is there any customization.
     if (dishCustom_val == 0) dishCustom_val = null;
+    // if check against prod_temp.
+    if (!!prod_Temp.md_val[md_val] && !!prod_Temp.meat_val[meat_val] && !!prod_Temp.nood_val[nood_val]) 
+    {}
+    else {
+      hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> The item you selected doesn't exist.</span> </label></div>`;
+      hidInvalidWarn.hidden = false;
+      console.log ("not okay");
+      return;
+    }
+
     const id = getRandomIntInclusive(1, 1000000000)
     const compareObj = {id, md_val, meat_val, nood_val, dishCustom_val, numberofplates_val};
     
+    // if check spamming more than 20 click on addingToCard.
     if (addingToCardCountStart < 20){
+      // if  check cart contain 0 type.
       if (cart.length == 0) cart.push(compareObj);
       else {
         const el = getElOfTheOrderAlrdyContain(compareObj, cart);
+        const el_id = el.id;
 
+        // if there's any type that already contained, or else simply push.
         if (true && el) {
           compareObj.numberofplates_val  = parseInt(el.numberofplates_val) + parseInt(numberofplates_val) + '';
           cart = cart.filter(t => t !== el);
-          cart.push(compareObj);
-          console.log(JSON.stringify(cart, null, "  "));
+          
+          const replaceObj = {id: el_id, md_val, meat_val, nood_val, dishCustom_val, numberofplates_val};
+          cart.push(replaceObj);
         }
         else {
           cart.push(compareObj);
         }
       }
+      console.log(JSON.stringify(cart, null, "  "));
       addingToCardCountStart++;
     }
     else {
-      // let hidInvalidWarn = document.querySelector("#hidInvalidWarn");
-      // hidInvalidWarn.hidden = false;
+      hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> You have already submitted this form 20 times. Please refresh the page or please submit a new form.</span> </label></div>`;
+      hidInvalidWarn.hidden = false;
     } 
   }
 }
@@ -177,7 +212,7 @@ function getElOfTheOrderAlrdyContain(obj, list) {
 
 document.addEventListener("DOMContentLoaded", () => {
   onLoad();
-  get_authToken();
+  // get_authToken();
 });
 
 submitfrm1.addEventListener("click", event => {

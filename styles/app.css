@@ -1,3 +1,6 @@
+#quantity::placeholder {
+  color: rgba(244, 109, 109, 0.803);
+}
 
 .flex-container {
   display: flex;
