@@ -25,6 +25,69 @@ form .frmGrp {
   margin-bottom: 1 rem;
 }
 
+.main-nav__item a:hover,
+.main-nav__item a:active {
+	color: white;
+	border-bottom: 5px solid white;
+}
+
+.main-nav__item a{
+	text-decoration: none;
+	color: #0e4f1f;
+	font-weight: bold;
+	padding: 3px 0;
+}
+
+.main-nav__item--cta a:hover,
+.main-nav__item--cta a:active {
+	color: #ff1b68;
+	background: white;
+	border: none;
+}
+
+.main-nav__item--cta a {
+	color: white;
+	background: #ff1b68;
+	padding: 8px 16px;
+	border-radius: 8px;
+}
+
+.main-nav__item {
+  display: inline-block;
+	margin: 0 16px;
+}
+
+.main-nav__items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.main-nav {
+	display: inline-block;
+	text-align: right;
+	width: calc(100% - 74px);
+	vertical-align: middle;
+}
+
+.main-header__brand {
+	color: #0e4f1f;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 22;
+}
+
+.main-header > div {
+  display: inline-block;
+	vertical-align: middle;
+}
+
+.main-header {
+  width: 100%;
+  background-color: #2ddf5c;
+  padding: 8px 16px;
+}
+
 label,
 input,
 textarea {
@@ -32,12 +95,9 @@ textarea {
   margin: 0.5rem 0;
 }
 
-html {
-  font-family: sans-serif;
-}
-
 body {
   margin: 0;
+  font-family: 'Montserrat', 'Sans-serif';
 }
 
 * { 
