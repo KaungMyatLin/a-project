@@ -25,8 +25,9 @@ function onLoad() {
   });
 }
 
-let cart = [];
-let addingToCardCountStart = 0;
+const cart = [];
+const addingToCardCountStart = 0;
+const getToken = '';
 
 const getAddingCartBtnClickCount = () => {
     return addingToCardCountStart = 0;
@@ -57,6 +58,7 @@ async function post_chkout() {
   const des_val = document.querySelector(".field4 input").value;
 
   const orderId = Math.random();
+  const total = make_ordLst();
   const post_data = {
     providerName: typ_val,
     methodName: mtd_val,
@@ -64,11 +66,7 @@ async function post_chkout() {
     orderId: orderId,
     customerPhone: ph_val,
     customerName: fn_val + " " + ln_val,
-    Items: `[{
-      'name': 
-      'amount': 
-      'quantity':
-    }]`,
+    Items: cart
   };
   sendHttpReq("POST", `https://api.dinger.asia/`, post_data).then(res => {
     console.log(res);
@@ -83,13 +81,16 @@ function get_authToken() {
       "apiKey=r81pnlf.qBJ18LvnTvcxw2nIAhcqBu2yNP4&" +
       "merchantName=kaung myat"
   )
-    .then(response => {
-      if (response.code == "000") return;
+    .then(resp => {
+      if (resp.code == "000") {
+        getToken = resp.response.paymentToken;
+        console.log(getToken);
+      }
       else {
         return new Promise(() => {
           throw new Error(
             "get response error code: <200 or >300 - return message: " +
-              response.message
+            resp.message
           );
         });
       }
@@ -98,35 +99,21 @@ function get_authToken() {
     .catch();
 }
 
-function isVarAPureObj(obj) {
+const isVarAPureObj = (obj) => {
     
     return (typeof obj === 'object' &&
     !Array.isArray(obj) &&
     obj !== null);
 }
 
-function getRandomIntInclusive(min, max) {
+const getRandomIntInclusive = (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
 }
 
-let prod_Temp = {
-    md_val: {
-      Sichat: 'Sichat',
-      'KyayOh Sichat': 'KyayOh Sichat',
-    },
-    meat_val: {
-      Pork: 'Pork',
-      Poultry: 'Poultry',
-    },
-    nood_val: {
-      Vermicelli: 'Vermicelli',
-      Wheat: 'Wheat',
-    },
-  }
 
-function make_ordLst() {
+const make_ordLst = () => {
   const md_val = md_val_select.value;
   const meat_val = meat_val_select.value;
   const nood_val = nood_val_select.value;
@@ -134,6 +121,20 @@ function make_ordLst() {
   const numberofplates_val = numberofplates_val_input.value;
   console.log(md_val, meat_val, nood_val, dishCustom_val, numberofplates_val);
   
+let prod_Temp = {
+  md_val: {
+    Sichat: 'Sichat',
+    'KyayOh Sichat': 'KyayOh Sichat',
+  },
+  meat_val: {
+    Pork: 'Pork',
+    Poultry: 'Poultry',
+  },
+  nood_val: {
+    Vermicelli: 'Vermicelli',
+    Wheat: 'Wheat',
+  },
+}
   // let cartItem = {
   //   objec: {},
 
@@ -167,8 +168,7 @@ function make_ordLst() {
       return;
     }
 
-    const id = getRandomIntInclusive(1, 1000000000)
-    const compareObj = {id, md_val, meat_val, nood_val, dishCustom_val, numberofplates_val};
+    const compareObj = { md_val, meat_val, nood_val, dishCustom_val, numberofplates_val};
     
     // if check spamming more than 20 click on addingToCard.
     if (addingToCardCountStart < 20){
@@ -176,19 +176,20 @@ function make_ordLst() {
       if (cart.length == 0) cart.push(compareObj);
       else {
         const el = getElOfTheOrderAlrdyContain(compareObj, cart);
-        const el_id = el.id;
 
         // if there's any type that already contained, or else simply push.
         if (true && el) {
-          compareObj.numberofplates_val  = parseInt(el.numberofplates_val) + parseInt(numberofplates_val) + '';
+          const noofplates_Inc  = parseInt(el.numberofplates_val) + parseInt(numberofplates_val) + '';
           cart = cart.filter(t => t !== el);
           
-          const replaceObj = {id: el_id, md_val, meat_val, nood_val, dishCustom_val, numberofplates_val};
-          cart.push(replaceObj);
+          const replacinObj = {md_val, meat_val, nood_val, dishCustom_val, numberofplates_val: noofplates_Inc};
+          cart.push(replacinObj);
         }
         else {
           cart.push(compareObj);
         }
+
+        return getTtlOfCalcPricesQty(cart);
       }
       console.log(JSON.stringify(cart, null, "  "));
       addingToCardCountStart++;
@@ -200,8 +201,16 @@ function make_ordLst() {
   }
 }
 
+const getTtlOfCalcPricesQty = (list) => {
 
-function getElOfTheOrderAlrdyContain(obj, list) {
+
+  list.map(o => {
+      const {md_val, numberofplates_val} = o;
+      
+  }  )
+}
+
+const getElOfTheOrderAlrdyContain = (obj, list) => {
   return list.find((t) =>
     t.md_val === obj.md_val && 
     t.meat_val === obj.meat_val &&
