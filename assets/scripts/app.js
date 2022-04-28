@@ -33,15 +33,16 @@ const getToken = '';
 
 const getAddingCartBtnClickCount = () => {
     return addingToCardCountStart = 0;
-} 
+}
 
-function sendHttpReq(method, url, dt = undefined) {
+function sendHttpReq(method, url, dt = undefined, bearerToken = undefined) {
   const postD = JSON.stringify(dt);
 
   return fetch(url, {
     method,
     body: postD,
     headers: {
+      "Authorization": "Bearer " + bearerToken,
       "Content-type": "application/json",
     },
   }).then(res => {
@@ -73,24 +74,21 @@ async function post_chkout() {
     Items: cart
   };
 
-  console.log(post_data);
-  const json = JSON.stringify(post_data);
-  console.log(json);
+  const pubKey = "-----BEGIN PUBLIC KEY-----\n"+
+  "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCil81JlfqDrdXNKbKmv6pPbPPs6p/qWhtFldNBP3mjtroC2TrPEeNQXnNf23Ijvwlsf07V8eHDEd9j05A2B56OaTwsgOgaaSHjSA6tinbKmyxllAxzAWGF37+ice0ts13HYNXGsLGqYTREzF+IDKWEKcwmey4tmufxPQA/vrTEAQIDAQAB\n"+
+  "-----END PUBLIC KEY-----";
 
-  const pubKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCil81JlfqDrdXNKbKmv6pPbPPs6p/qWhtFldNBP3mjtroC2TrPEeNQXnNf23Ijvwlsf07V8eHDEd9j05A2B56OaTwsgOgaaSHjSA6tinbKmyxllAxzAWGF37+ice0ts13HYNXGsLGqYTREzF+IDKWEKcwmey4tmufxPQA/vrTEAQIDAQAB"
+  const nodersa = new NodeRSA();
+  nodersa.importKey(pubKey, 'pkcs8-public');
+  nodersa.setOptions({encryptionScheme: 'pkcs1'});
+  // .encrypt alrdy provide Json.stringify to first arg, buffer. Second arg is encoding for output.
+  const payload = nodersa.encrypt(data,'base64');
+  console.log("payload "+payload);
 
-  const publicKey = new NodeRSA();
-  publicKey.importKey(pubKey, 'pkcs8-public')
-  publicKey.setOptions({encryptionScheme: 'pkcs1'})
-  const encrytpStr = publicKey.encrypt(data,'base64')
-  publicKey.importKey(pubKey, 'pkcs8-public')
-
-  // const encrypteDataWithRsa = rsa(jsonStrigify(post_data), getToken)
-  // const payload = Base64.getEncoder().encodeToString(encrypteDataWithRsa)
-
-  // sendHttpReq("POST", `https://api.dinger.asia/`, post_data).then(res => {
-  //   console.log(res);
-  // });
+  sendHttpReq("POST",
+  "https://api.dinger.asia/api/pay", postPayload_dataObj, pubKey).then(res => {
+    console.log(res);
+  });
 }
 
 function get_authToken() {
@@ -120,7 +118,6 @@ function get_authToken() {
 }
 
 const isVarAPureObj = (obj) => {
-    
     return (typeof obj === 'object' &&
     !Array.isArray(obj) &&
     obj !== null);
