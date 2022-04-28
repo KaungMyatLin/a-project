@@ -1,3 +1,5 @@
+import NodeRSA from 'node-rsa';
+
 const md_val_select = document.querySelector("#main_dish_div select");
 const meat_val_select = document.querySelector("#choose_meat_div select")
 const nood_val_select = document.querySelector("#choose_noodle_div select")
@@ -25,8 +27,8 @@ function onLoad() {
   });
 }
 
-const cart = [];
-const addingToCardCountStart = 0;
+let cart = [];
+let addingToCardCountStart = 0;
 const getToken = '';
 
 const getAddingCartBtnClickCount = () => {
@@ -48,18 +50,20 @@ function sendHttpReq(method, url, dt = undefined) {
 }
 
 async function post_chkout() {
-  const fn_val = document.querySelector(".field1 div:nth-child(0) input").value;
-  const ln_val = document.querySelector(".field1 div:nth-child(1) input").value;
+  const fn_val = document.querySelector(".fn input").value;
+  const ln_val = document.querySelector(".ln input").value;
   const ph_val = document.querySelector(".field2 input").value;
   const amt_val = document.querySelector(".field5 input").value;
-  const typ_val = document.querySelector(".field6 input").value;
-  const mtd_val = document.querySelector(".field7 input").value;
+  const typ_val = document.querySelector(".field6 select").value;
+  const mtd_val = document.querySelector(".field7 select").value;
   const add_val = document.querySelector(".field3 input").value;
   const des_val = document.querySelector(".field4 input").value;
 
-  const orderId = Math.random();
-  const total = make_ordLst();
-  const post_data = {
+  const orderId = getRandomIntInclusive(0,1000000000);
+  const total = getTtlOfCalcPricesQty(cart);
+  console.log(total);
+
+  const postPayload_dataObj = {
     providerName: typ_val,
     methodName: mtd_val,
     totalAmount: amt_val,
@@ -68,9 +72,25 @@ async function post_chkout() {
     customerName: fn_val + " " + ln_val,
     Items: cart
   };
-  sendHttpReq("POST", `https://api.dinger.asia/`, post_data).then(res => {
-    console.log(res);
-  });
+
+  console.log(post_data);
+  const json = JSON.stringify(post_data);
+  console.log(json);
+
+  const pubKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCil81JlfqDrdXNKbKmv6pPbPPs6p/qWhtFldNBP3mjtroC2TrPEeNQXnNf23Ijvwlsf07V8eHDEd9j05A2B56OaTwsgOgaaSHjSA6tinbKmyxllAxzAWGF37+ice0ts13HYNXGsLGqYTREzF+IDKWEKcwmey4tmufxPQA/vrTEAQIDAQAB"
+
+  const publicKey = new NodeRSA();
+  publicKey.importKey(pubKey, 'pkcs8-public')
+  publicKey.setOptions({encryptionScheme: 'pkcs1'})
+  const encrytpStr = publicKey.encrypt(data,'base64')
+  publicKey.importKey(pubKey, 'pkcs8-public')
+
+  // const encrypteDataWithRsa = rsa(jsonStrigify(post_data), getToken)
+  // const payload = Base64.getEncoder().encodeToString(encrypteDataWithRsa)
+
+  // sendHttpReq("POST", `https://api.dinger.asia/`, post_data).then(res => {
+  //   console.log(res);
+  // });
 }
 
 function get_authToken() {
@@ -112,8 +132,7 @@ const getRandomIntInclusive = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
 }
 
-
-const make_ordLst = () => {
+const create_ordLst = () => {
   const md_val = md_val_select.value;
   const meat_val = meat_val_select.value;
   const nood_val = nood_val_select.value;
@@ -124,6 +143,7 @@ const make_ordLst = () => {
 let prod_Temp = {
   md_val: {
     Sichat: 'Sichat',
+    KyayOh: 'KyayOh',
     'KyayOh Sichat': 'KyayOh Sichat',
   },
   meat_val: {
@@ -188,26 +208,30 @@ let prod_Temp = {
         else {
           cart.push(compareObj);
         }
-
-        return getTtlOfCalcPricesQty(cart);
       }
       console.log(JSON.stringify(cart, null, "  "));
       addingToCardCountStart++;
+      return cart;
     }
     else {
       hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> You have already submitted this form 20 times. Please refresh the page or please submit a new form.</span> </label></div>`;
       hidInvalidWarn.hidden = false;
-    } 
+    }
   }
 }
 
 const getTtlOfCalcPricesQty = (list) => {
+  let price;
 
-
-  list.map(o => {
-      const {md_val, numberofplates_val} = o;
+  return list.reduce( (sum, cur) => {
+      const {md_val, numberofplates_val} = cur;
       
-  }  )
+      if (md_val === "Sichat") { price = 1500; }
+      else if (md_val === "KyayOh") { price = 4000; }
+      else if (md_val === "KyayOh Sichat") { price = 4300; }
+
+      return price * numberofplates_val + sum;
+  }, 0)
 }
 
 const getElOfTheOrderAlrdyContain = (obj, list) => {
@@ -227,7 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
 submitfrm1.addEventListener("click", event => {
   event.preventDefault();
 
-  make_ordLst();
+  create_ordLst();
 });
 
 submitfrm2.addEventListener("click", event => {
