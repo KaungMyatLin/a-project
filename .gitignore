@@ -1,4 +1,3 @@
 node_modules
 js/map.reduce.filter.js
-.vscode/a project.code-workspace
-.vscode/settings.json
+.vscode
