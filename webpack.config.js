@@ -1,5 +1,5 @@
-const path = require ('path');
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require('path');
 const fs = require('fs');
 
@@ -12,7 +12,7 @@ console.log(appDirectory);
 module.exports = {
     mode: 'development',
     entry: {
-        app: [resolveAppPath('src') + '/app.js', resolveAppPath('src') + '/payment Checkout.html'],
+        app: [resolveAppPath('src') + '/app.js'],
     },
     output: {
         filename: '[name].js',
@@ -25,6 +25,12 @@ module.exports = {
         // }
     },
     plugins: [
-		new NodePolyfillPlugin()
+		new NodePolyfillPlugin(),
+        new HtmlWebpackPlugin(
+        // {
+        //     title: 'Webpack App',
+        //     filename:  'index.html',
+        // }
+        )
 	]
 };
