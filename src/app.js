@@ -242,12 +242,11 @@ const getElOfTheOrderAlrdyContain = (obj, list) => {
 
 document.addEventListener("DOMContentLoaded", () => {
   onLoad();
-  // get_authToken();
+  get_authToken();
 });
 
 submitfrm1.addEventListener("click", event => {
   event.preventDefault();
-
   create_ordLst();
 });
 
