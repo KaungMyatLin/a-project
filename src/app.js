@@ -94,12 +94,10 @@ async function post_chkout() {
 function get_authToken() {
   sendHttpReq(
     "GET",
-    "https://api.dinger.asia/api/token?" +
-      "projectName=form&" +
-      "apiKey=r81pnlf.qBJ18LvnTvcxw2nIAhcqBu2yNP4&" +
-      "merchantName=kaung myat"
+    `https://api.dinger.asia/api/token?projectName=form&apiKey=r81pnlf.qBJ18LvnTvcxw2nIAhcqBu2yNP4&merchantName=kaung myat`
   )
     .then(resp => {
+      console.log(resp);
       if (resp.code == "000") {
         getToken = resp.response.paymentToken;
         console.log(getToken);
@@ -107,7 +105,10 @@ function get_authToken() {
       else {
         return new Promise(() => {
           throw new Error(
-            "get response error code: <200 or >300 - return message: " +
+            "get response error code: <200 or >300 - " +
+            " returned code: " +
+            resp.code +
+            " - returned message: " +
             resp.message
           );
         });
