@@ -13,8 +13,8 @@ module.exports = {
     mode: 'development',
     entry:  './src/app.js',
     output: {
-        filename: '[name].js',
-        path: path.resolve(__dirname, 'assets', 'scripts')
+        path: path.resolve(__dirname, 'assets', 'scripts'),
+        filename: '[name].js'
     },
     plugins: [
 		new NodePolyfillPlugin(),

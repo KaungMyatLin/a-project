@@ -1,4 +1,4 @@
-import NodeRSA from '../node_modules/node-rsa';
+import * as NodeRSA from '../node_modules/node-rsa/src/NodeRSA.js';
 
 const md_val_select = document.querySelector("#main_dish_div select");
 const meat_val_select = document.querySelector("#choose_meat_div select")
