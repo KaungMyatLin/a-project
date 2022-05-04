@@ -1,5 +1,4 @@
 // import * as NodeRSA from '../node_modules/node-rsa/src/NodeRSA.js';
-
 const NodeRSA = require('node-rsa');
 
 const md_val_select = document.querySelector("#main_dish_div select");
@@ -69,7 +68,8 @@ async function post_chkout() {
   const postPayload_dataObj = {
     providerName: typ_val,
     methodName: mtd_val,
-    totalAmount: amt_val,
+    // totalAmount: amt_val,
+    totalAmount: total,
     orderId: orderId,
     customerPhone: ph_val,
     customerName: fn_val + " " + ln_val,
@@ -85,12 +85,12 @@ async function post_chkout() {
   nodersa.setOptions({encryptionScheme: 'pkcs1'});
   // .encrypt alrdy provide Json.stringify to first arg, buffer. Second arg is encoding for output.
   const payload = nodersa.encrypt(postPayload_dataObj,'base64');
-  console.log("payload "+payload);
+  console.log("payload: "+payload);
 
-  getToken = '6728da3b-6375-4a51-8035-19974d925a86';
+  getToken = 'ca76b31e-2796-4903-b0a6-836f29c4a45e';
 
   sendHttpReq("POST",
-  "https://api.dinger.asia/api/pay", payload, paymentToken).then(res => {
+  "https://api.dinger.asia/api/pay", payload, getToken).then(res => {
     console.log(res);
   });
 }
@@ -194,7 +194,7 @@ let prod_Temp = {
     
     // if check spamming more than 20 click on addingToCard.
     if (addingToCardCountStart < 20){
-      if (addingToCardCountStart >= 0 && addingToCardCountStart < 10) getToken = get_authToken();
+      // if (addingToCardCountStart >= 0 && addingToCardCountStart < 10) getToken = get_authToken();
       // if  check cart contain 0 type.
       if (cart.length == 0) cart.push(compareObj);
       else {
