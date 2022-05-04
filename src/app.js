@@ -36,15 +36,14 @@ const getAddingCartBtnClickCount = () => {
     return addingToCardCountStart = 0;
 }
 
-function sendHttpReq(method, url, dt = undefined, bearerToken = undefined) {
-  const postD = JSON.stringify(dt);
+function sendHttpReq(url, method, body, contType, payload = undefined, bearerToken = undefined) {
 
   return fetch(url, {
     method,
-    body: postD,
+    body: { payload },
     headers: {
       "Authorization": "Bearer " + bearerToken,
-      "Content-type": "application/json",
+      "Content-type": contType ?? "application/json",
     },
   }).then(res => {
     return res.json();
@@ -87,7 +86,7 @@ async function post_chkout() {
   const payload = nodersa.encrypt(postPayload_dataObj,'base64');
   console.log("payload: "+payload);
 
-  getToken = 'ca76b31e-2796-4903-b0a6-836f29c4a45e';
+  getToken = 'b7cdf65a-905d-46d7-84fd-84227f17fc79';
 
   sendHttpReq("POST",
   "https://api.dinger.asia/api/pay", payload, getToken).then(res => {
