@@ -1,4 +1,4 @@
-const NodeRSA = require('node-rsa');
+import NodeRSA from '../node_modules/node-rsa';
 
 const md_val_select = document.querySelector("#main_dish_div select");
 const meat_val_select = document.querySelector("#choose_meat_div select")
@@ -82,11 +82,13 @@ async function post_chkout() {
   nodersa.importKey(pubKey, 'pkcs8-public');
   nodersa.setOptions({encryptionScheme: 'pkcs1'});
   // .encrypt alrdy provide Json.stringify to first arg, buffer. Second arg is encoding for output.
-  const payload = nodersa.encrypt(data,'base64');
+  const payload = nodersa.encrypt(postPayload_dataObj,'base64');
   console.log("payload "+payload);
 
+  getToken = '6728da3b-6375-4a51-8035-19974d925a86';
+
   sendHttpReq("POST",
-  "https://api.dinger.asia/api/pay", postPayload_dataObj, pubKey).then(res => {
+  "https://api.dinger.asia/api/pay", payload, paymentToken).then(res => {
     console.log(res);
   });
 }
@@ -243,7 +245,7 @@ const getElOfTheOrderAlrdyContain = (obj, list) => {
 
 document.addEventListener("DOMContentLoaded", () => {
   onLoad();
-  get_authToken();
+  // get_authToken();
 });
 
 submitfrm1.addEventListener("click", event => {
