@@ -36,8 +36,8 @@ const getAddingCartBtnClickCount = () => {
     return addingToCardCountStart = 0;
 }
 
-function sendHttpReq(url, method, body, contType, payload = undefined, bearerToken = undefined) {
-
+function sendHttpReq(method, url, payload = undefined, contType, bearerToken = undefined) {
+  
   return fetch(url, {
     method,
     body: { payload },
@@ -62,7 +62,6 @@ async function post_chkout() {
 
   const orderId = getRandomIntInclusive(0,1000000000);
   const total = getTtlOfCalcPricesQty(cart);
-  console.log(total);
 
   const postPayload_dataObj = {
     providerName: typ_val,
@@ -74,6 +73,7 @@ async function post_chkout() {
     customerName: fn_val + " " + ln_val,
     Items: cart
   };
+  console.log("postPayload_dataObj: ", JSON.stringify(cart, null, "  "));
 
   const pubKey = "-----BEGIN PUBLIC KEY-----\n"+
   "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCil81JlfqDrdXNKbKmv6pPbPPs6p/qWhtFldNBP3mjtroC2TrPEeNQXnNf23Ijvwlsf07V8eHDEd9j05A2B56OaTwsgOgaaSHjSA6tinbKmyxllAxzAWGF37+ice0ts13HYNXGsLGqYTREzF+IDKWEKcwmey4tmufxPQA/vrTEAQIDAQAB\n"+
@@ -86,10 +86,10 @@ async function post_chkout() {
   const payload = nodersa.encrypt(postPayload_dataObj,'base64');
   console.log("payload: "+payload);
 
-  getToken = 'b7cdf65a-905d-46d7-84fd-84227f17fc79';
+  getToken = '24062d70-9132-4ccf-b4c6-b8dc11c9a62e';
 
   sendHttpReq("POST",
-  "https://api.dinger.asia/api/pay", payload, getToken).then(res => {
+  "https://api.dinger.asia/api/pay", payload, 'text/plain', getToken).then(res => {
     console.log(res);
   });
 }
