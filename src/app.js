@@ -1,4 +1,6 @@
-import * as NodeRSA from '../node_modules/node-rsa/src/NodeRSA.js';
+// import * as NodeRSA from '../node_modules/node-rsa/src/NodeRSA.js';
+
+const NodeRSA = require('node-rsa');
 
 const md_val_select = document.querySelector("#main_dish_div select");
 const meat_val_select = document.querySelector("#choose_meat_div select")
@@ -29,7 +31,7 @@ function onLoad() {
 
 let cart = [];
 let addingToCardCountStart = 0;
-const getToken = '';
+let getToken = '';
 
 const getAddingCartBtnClickCount = () => {
     return addingToCardCountStart = 0;
@@ -192,6 +194,7 @@ let prod_Temp = {
     
     // if check spamming more than 20 click on addingToCard.
     if (addingToCardCountStart < 20){
+      if (addingToCardCountStart >= 0 && addingToCardCountStart < 10) getToken = get_authToken();
       // if  check cart contain 0 type.
       if (cart.length == 0) cart.push(compareObj);
       else {
