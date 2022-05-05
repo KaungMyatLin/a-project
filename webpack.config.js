@@ -11,7 +11,7 @@ console.log(appDirectory);
 
 module.exports = {
     mode: 'development',
-    entry:  './src/app.js',
+    entry:  './src/app copy.js',
     output: {
         path: path.resolve(__dirname, 'assets', 'scripts'),
         filename: '[name].js'

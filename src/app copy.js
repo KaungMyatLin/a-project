@@ -40,7 +40,7 @@ function sendHttpReq(method, url, payload = undefined, contType, bearerToken = u
   
   return fetch(url, {
     method,
-    body: { payload },
+    body: payload,
     headers: {
       "Authorization": "Bearer " + bearerToken,
       "Content-type": contType ?? "application/json",
@@ -71,7 +71,6 @@ async function post_chkout() {
     customerName: fn_val + " " + ln_val,
     Items: cart
   };
-  console.log("postPayload_dataObj: ", postPayload_dataObj);
 
   const pubKey = "-----BEGIN PUBLIC KEY-----\n"+
   "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCil81JlfqDrdXNKbKmv6pPbPPs6p/qWhtFldNBP3mjtroC2TrPEeNQXnNf23Ijvwlsf07V8eHDEd9j05A2B56OaTwsgOgaaSHjSA6tinbKmyxllAxzAWGF37+ice0ts13HYNXGsLGqYTREzF+IDKWEKcwmey4tmufxPQA/vrTEAQIDAQAB\n"+
@@ -88,9 +87,12 @@ async function post_chkout() {
   nodersa.setOptions({encryptionScheme: 'pkcs1'});
   // .encrypt alrdy provide Json.stringify to first arg, buffer. Second arg is encoding for output.
   const payload = nodersa.encrypt(postPayload_dataObj,'base64');
+
+  console.log(total);
+  console.log("postPayload_dataObj: ", postPayload_dataObj);
   console.log("payload: "+payload);
 
-  getToken = 'e1b3ee11-f432-422f-8c3d-a97b4b497c54';
+  getToken = 'cd1ae547-d6e8-46b0-bd46-f2da8fb6d7ff';
 
   sendHttpReq("POST",
   "https://api.dinger.asia/api/pay", payload, 'text/plain', getToken).then(res => {
@@ -143,8 +145,7 @@ const create_ordLst = () => {
   const nood_val = nood_val_select.value;
   let dishCustom_val = dishCustom_val_select.value;
   const numberofplates_val = numberofplates_val_input.value;
-  console.log(md_val, meat_val, nood_val, dishCustom_val, numberofplates_val);
-  
+
 let prod_Temp = {
   md_val: {
     Sichat: 'Sichat',
@@ -193,11 +194,29 @@ let prod_Temp = {
       return;
     }
 
-    const compareObj = { md_val, meat_val, nood_val, dishCustom_val, numberofplates_val};
-    
     // if check spamming more than 20 click on addingToCard.
     if (addingToCardCountStart < 20){
-      // if (addingToCardCountStart >= 0 && addingToCardCountStart < 10) getToken = get_authToken();
+
+      // // if (addingToCardCountStart >= 0 && addingToCardCountStart < 10) getToken = get_authToken();
+      const md_obj = {
+        name: md_val
+         + ',' + meat_val
+         + ',' + nood_val
+         + ',' + dishCustom_val ?? 'No Customization'};
+
+      const name = md_obj.name;
+      const md_type = name.split(',')[0];
+      console.log(name.split(','));
+
+      let price;
+      if (md_type === "Sichat") { price = 1500; }
+      else if (md_type === "KyayOh") { price = 4000; }
+      else if (md_type === "KyayOh Sichat") { price = 4300; }
+
+      const compareObj = {
+        ... md_obj
+        , amount  : price
+        , quantity: numberofplates_val};
       // if  check cart contain 0 type.
       if (cart.length == 0) cart.push(compareObj);
       else {
@@ -205,16 +224,21 @@ let prod_Temp = {
 
         // if there's any type that already contained, or else simply push.
         if (true && el) {
-          const noofplates_Inc  = parseInt(el.numberofplates_val) + parseInt(numberofplates_val) + '';
+          const noofplates_Inc  = parseInt(el.quantity) + parseInt(numberofplates_val) + '';
           cart = cart.filter(t => t !== el);
-          
-          const replacinObj = {md_val, meat_val, nood_val, dishCustom_val, numberofplates_val: noofplates_Inc};
+
+          const replacinObj = {
+            ... md_obj
+            , amount  : price
+            , quantity: noofplates_Inc};
           cart.push(replacinObj);
         }
         else {
           cart.push(compareObj);
         }
       }
+
+      // // console.log(md_val, meat_val, nood_val, dishCustom_val, numberofplates_val);
       console.log(JSON.stringify(cart, null, "  "));
       addingToCardCountStart++;
       return cart;
@@ -230,23 +254,22 @@ const getTtlOfCalcPricesQty = (list) => {
   let price;
 
   return list.reduce( (sum, cur) => {
-      const {md_val, numberofplates_val} = cur;
-      
-      if (md_val === "Sichat") { price = 1500; }
-      else if (md_val === "KyayOh") { price = 4000; }
-      else if (md_val === "KyayOh Sichat") { price = 4300; }
+      const {name, quantity} = cur;
+      const md_type = name.split(',')[0];
+      console.log(md_type);
 
-      return price * numberofplates_val + sum;
+      if (md_type === "Sichat") { price = 1500; }
+      else if (md_type === "KyayOh") { price = 4000; }
+      else if (md_type === "KyayOh Sichat") { price = 4300; }
+
+      return price * quantity + sum;
   }, 0)
 }
 
 const getElOfTheOrderAlrdyContain = (obj, list) => {
   return list.find((t) =>
-    t.md_val === obj.md_val && 
-    t.meat_val === obj.meat_val &&
-    t.nood_val === obj.nood_val &&
-    t.dishCustom_val === obj.dishCustom_val
-  ); 
+    t.name === obj.name
+  );
 }
 
 document.addEventListener("DOMContentLoaded", () => {
