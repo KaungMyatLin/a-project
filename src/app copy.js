@@ -38,9 +38,11 @@ const getAddingCartBtnClickCount = () => {
 
 function sendHttpReq(method, url, payload = undefined, contType, bearerToken = undefined) {
   
+  const formData = new FormData();
+  formData.append("payload", payload);
   return fetch(url, {
     method,
-    body: payload,
+    body: formData,
     headers: {
       "Authorization": "Bearer " + bearerToken,
       "Content-type": contType ?? "application/json",
@@ -66,7 +68,7 @@ async function post_chkout() {
     providerName: typ_val,
     methodName: mtd_val,
     totalAmount: total,
-    orderId: orderId,
+    orderId: orderId + '',
     customerPhone: ph_val,
     customerName: fn_val + " " + ln_val,
     Items: cart
@@ -88,14 +90,13 @@ async function post_chkout() {
   // .encrypt alrdy provide Json.stringify to first arg, buffer. Second arg is encoding for output.
   const payload = nodersa.encrypt(postPayload_dataObj,'base64');
 
-  console.log(total);
   console.log("postPayload_dataObj: ", postPayload_dataObj);
   console.log("payload: "+payload);
 
-  getToken = 'cd1ae547-d6e8-46b0-bd46-f2da8fb6d7ff';
+  getToken = '8dad85eb-6ddc-4efc-a7b8-e154fd6572a4';
 
-  sendHttpReq("POST",
-  "https://api.dinger.asia/api/pay", payload, 'text/plain', getToken).then(res => {
+  sendHttpReq("POST",  //'application/x-www-form-urlencoded'
+  "https://api.dinger.asia/api/pay", payload, 'multipart/form-data', getToken).then(res => {
     console.log(res);
   });
 }
@@ -206,7 +207,6 @@ let prod_Temp = {
 
       const name = md_obj.name;
       const md_type = name.split(',')[0];
-      console.log(name.split(','));
 
       let price;
       if (md_type === "Sichat") { price = 1500; }
@@ -239,7 +239,7 @@ let prod_Temp = {
       }
 
       // // console.log(md_val, meat_val, nood_val, dishCustom_val, numberofplates_val);
-      console.log(JSON.stringify(cart, null, "  "));
+      // // console.log(JSON.stringify(cart, null, "  "));
       addingToCardCountStart++;
       return cart;
     }
@@ -256,7 +256,6 @@ const getTtlOfCalcPricesQty = (list) => {
   return list.reduce( (sum, cur) => {
       const {name, quantity} = cur;
       const md_type = name.split(',')[0];
-      console.log(md_type);
 
       if (md_type === "Sichat") { price = 1500; }
       else if (md_type === "KyayOh") { price = 4000; }
