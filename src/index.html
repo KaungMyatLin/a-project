@@ -99,9 +99,11 @@
                 <label selected for="quantity">Quantity <span style="color: red !important; display: inline; float: none;">*</span> </label>
                 <input placeholder="99" id="quantity" type="number"  class="form-control" min="0" max="99" minlength="1" maxlength="2" value="0" required>
             </div>
-            <div id="hidInvalidWarn" hidden><label> <span style="color: red !important; display: inline; float: none;"> Please select Choices marked by {*}</span> </label></div>
+            <div class="frmGrp marginBtm" id="frm1_done">
+                <button type="button">Add to List</button>
+            </div>
             <div class="frmGrp marginBtm" id="frm1_checkout">
-                <button type="submit">Submit</button>
+                <button type="submit">Done</button>
             </div>
         </form>
 
@@ -109,9 +111,9 @@
             
         <form accept-charset="UTF-8"" id="form2">
         
-            <input name="_method" type="hidden" value="PUT">
+            <!-- <input name="_method" type="hidden" value="PUT">
             <input name="_token" type="hidden" value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCGgou+Ff1dF5ZEbLwY1IO8tovHgFnO6t8qZoIb0+DnUfIBiyPs2zHGxkCSX9XsTrbv8NlrsBnwDcAMLtjbhKbnRRY47ZNuCDhl9VPbvTCbV6nO7ZyOpeDpyJ4456n4epbQo5iX5GHvyhM1/G6YhU6R73zixif1h5hxfWpte1FEawIDAQAB">
-            <input type="hidden" name="_token" value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCGgou+Ff1dF5ZEbLwY1IO8tovHgFnO6t8qZoIb0+DnUfIBiyPs2zHGxkCSX9XsTrbv8NlrsBnwDcAMLtjbhKbnRRY47ZNuCDhl9VPbvTCbV6nO7ZyOpeDpyJ4456n4epbQo5iX5GHvyhM1/G6YhU6R73zixif1h5hxfWpte1FEawIDAQAB">
+            <input type="hidden" name="_token" value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCGgou+Ff1dF5ZEbLwY1IO8tovHgFnO6t8qZoIb0+DnUfIBiyPs2zHGxkCSX9XsTrbv8NlrsBnwDcAMLtjbhKbnRRY47ZNuCDhl9VPbvTCbV6nO7ZyOpeDpyJ4456n4epbQo5iX5GHvyhM1/G6YhU6R73zixif1h5hxfWpte1FEawIDAQAB"> -->
     
             <!-- <input name="_token" type="hidden" value="mt4BwpLKn0EwB2MpFvYIoepo2Qk4uwTxwfXCDAKu"> -->
             <!-- <input type="hidden" name="_token" value="0sujFPUXBNx7gq0fOWf6Wu1mIDI8fbhUNsQoSgjy"> -->
@@ -162,6 +164,10 @@
                     <option value="QR">Pay with QR</option>
                     <option value="PIN">Pay with PIN</option>
                 </select>
+            </div>
+            <div id="hidInvalidWarn" hidden>
+                <label> <span style="color: red !important; display: inline; float: none;"> Please input/ select all fields marked by {*}</span> 
+                </label>
             </div>
             <div class="frmGrp marginBtm" id="frm2_checkout">
                 <button type="submit">Submit</button>

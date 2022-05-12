@@ -1,15 +1,25 @@
-// // import * as NodeRSA from '../node_modules/node-rsa/src/NodeRSA.js';
-const NodeRSA = require('node-rsa');
+const NodeRSA = require('node-rsa');            // Commonjs_Module
+// import constants from 'apiIntePcs_Const  ';   // ES_Module
 
+// DOMObj let and const variables
 const md_val_select = document.querySelector("#main_dish_div select");
 const meat_val_select = document.querySelector("#choose_meat_div select")
 const nood_val_select = document.querySelector("#choose_noodle_div select")
 let dishCustom_val_select = document.querySelector("#option_customize_div select")
 const numberofplates_val_input = document.querySelector("#quantity_div input")
-const submitfrm1 = document.querySelector("#frm1_checkout button");
+const alertList = document.querySelector("#frm1_checkout button");
+const addtoListfrm = document.querySelector("#frm1_done button");
 const submitfrm2 = document.querySelector("#frm2_checkout button");
 let hidInvalidWarn = document.querySelector("#hidInvalidWarn");
+const fn_inp = document.querySelector(".fn input").value;
+const ln_inp = document.querySelector(".ln input").value;
+const ph_inp = document.querySelector(".field2 input").value;
+const typ_sel = document.querySelector(".field6 select").value;
+const mtd_sel = document.querySelector(".field7 select").value;
+const add_inp = document.querySelector(".field3 input").value;
+const des_inp = document.querySelector(".field4 input").value;
 
+// functional Events
 function onLoad() {
   const mainDish_ddm = document.querySelector("#main_dish");
 
@@ -27,20 +37,34 @@ function onLoad() {
     }
   });
 }
+document.addEventListener("DOMContentLoaded", () => {
+  onLoad();
+});
+addtoListfrm.addEventListener("click", event => {
+  event.preventDefault();
+  create_ordLst();
+});
+alertList.addEventListener("click", event => {
+  event.preventDefault();
+  alert();
+});
+submitfrm2.addEventListener("click", event => {
+  event.preventDefault();
+  post_chkout();
+});
 
+// global let variables
 let cart = [];
 let addingToCardCountStart = 0;
 let getToken = '';
 
-const getAddingCartBtnClickCount = () => {
-    return addingToCardCountStart = 0;
-}
-
-function sendHttpReq(method, url, payload = undefined, contType, bearerToken = undefined) {
-  
+// functions
+const sendHttpReq = (method, url, payload = undefined, contType, bearerToken = undefined) => {
+  const formData = new FormData();
+  formData.append("payload", payload);
   return fetch(url, {
     method,
-    body: { payload },
+    body: formData,
     headers: {
       "Authorization": "Bearer " + bearerToken,
       "Content-type": contType ?? "application/json",
@@ -49,30 +73,36 @@ function sendHttpReq(method, url, payload = undefined, contType, bearerToken = u
     return res.json();
   });
 }
-
 async function post_chkout() {
-  const fn_val = document.querySelector(".fn input").value;
-  const ln_val = document.querySelector(".ln input").value;
-  const ph_val = document.querySelector(".field2 input").value;
-  const typ_val = document.querySelector(".field6 select").value;
-  const mtd_val = document.querySelector(".field7 select").value;
-  const add_val = document.querySelector(".field3 input").value;
-  const des_val = document.querySelector(".field4 input").value;
+  const fn_val = fn_inp.value;
+  const ln_val = ln_inp.value;
+  const ph_val = ph_inp.value;
+  const typ_val = typ_sel.value;
+  const mtd_val = mtd_sel.value;
+  const add_val = add_inp.value;
+  const des_val = des_inp.value;
 
+  // if user doesn't select any, show hidden warning.
+  if (typ_sel, mtd_sel == 0 && fn_val, ln_val, ph_val, add_inp, des_inp == '') {
+    hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> Please select Choices marked by {*}</span> </label></div>`;
+    hidInvalidWarn.hidden = false;
+  }
+
+  //get orderId & calculatedTotal.
   const orderId = getRandomIntInclusive(0,1000000000);
   const total = getTtlOfCalcPricesQty(cart);
 
-  const postPayload_dataObj = {
+  const cObj_postPayload = {
     providerName: typ_val,
     methodName: mtd_val,
     totalAmount: total,
-    orderId: orderId,
+    orderId: orderId + '',
     customerPhone: ph_val,
     customerName: fn_val + " " + ln_val,
     Items: cart
   };
-  console.log("postPayload_dataObj: ", postPayload_dataObj);
 
+  console.log(JSON.stringify(cart, null, " "));
   const pubKey = "-----BEGIN PUBLIC KEY-----\n"+
   "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCil81JlfqDrdXNKbKmv6pPbPPs6p/qWhtFldNBP3mjtroC2TrPEeNQXnNf23Ijvwlsf07V8eHDEd9j05A2B56OaTwsgOgaaSHjSA6tinbKmyxllAxzAWGF37+ice0ts13HYNXGsLGqYTREzF+IDKWEKcwmey4tmufxPQA/vrTEAQIDAQAB\n"+
   "-----END PUBLIC KEY-----\n";
@@ -87,180 +117,178 @@ async function post_chkout() {
   // output_type = 'pem' — Base64 encoded with header and footer. Used by default, 'der' — Binary encoded key data.
   nodersa.setOptions({encryptionScheme: 'pkcs1'});
   // .encrypt alrdy provide Json.stringify to first arg, buffer. Second arg is encoding for output.
-  const payload = nodersa.encrypt(postPayload_dataObj,'base64');
+  const payload = nodersa.encrypt(cObj_postPayload,'base64');
+
+  console.log("postPayload_dataObj: ", cObj_postPayload);
   console.log("payload: "+payload);
 
-  getToken = 'e1b3ee11-f432-422f-8c3d-a97b4b497c54';
+  getToken = 'cbf78574-50f4-4f1e-bc4d-6280436b2915' ?? get_authToken();
 
   sendHttpReq("POST",
-  "https://api.dinger.asia/api/pay", payload, 'text/plain', getToken).then(res => {
+  `https://api.dinger.asia/api/pay`, payload, 'multipart/form-data', getToken).then(res => {
     console.log(res);
   });
-}
 
-function get_authToken() {
+  let oLocation = '';
+  const {providerName, methodName} = cObj_postPayload;
+  // location.assign("http://www.mozilla.org");
+}
+const get_authToken = () => {
   sendHttpReq(
     "GET",
     `https://api.dinger.asia/api/token?projectName=form&apiKey=r81pnlf.qBJ18LvnTvcxw2nIAhcqBu2yNP4&merchantName=kaung myat`
   )
-    .then(resp => {
-      console.log(resp);
-      if (resp.code == "000") {
-        getToken = resp.response.paymentToken;
-        console.log(getToken);
-      }
-      else {
+  .then(resp => {
+        console.log(resp); 
+        if (resp.status <= 200 && resp.status > 300) return new Promise(() => {
+                throw new Error(
+                  "Something went wrong between you sent and server receiving"
+                )});
+  })
+  .then(resp => {
+        if(resp.code == "000") {console.log(getToken); return resp.response.paymentToken;} //guard clause
+
         return new Promise(() => {
           throw new Error(
-            "get response error code: <200 or >300 - " +
-            " returned code: " +
+            " server responsed with backend error code: " +
             resp.code +
-            " - returned message: " +
+            " - responsed message: " +
             resp.message
-          );
-        });
-      }
-    })
-    .then()
-    .catch();
+            );
+          })
+  })
+  .catch(error => {
+        alert("Something went wrong during GET response\n" + error);
+        console.log(error);
+  });
 }
-
-const isVarAPureObj = (obj) => {
-    return (typeof obj === 'object' &&
-    !Array.isArray(obj) &&
-    obj !== null);
-}
-
 const getRandomIntInclusive = (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
 }
-
 const create_ordLst = () => {
   const md_val = md_val_select.value;
   const meat_val = meat_val_select.value;
   const nood_val = nood_val_select.value;
   let dishCustom_val = dishCustom_val_select.value;
   const numberofplates_val = numberofplates_val_input.value;
-  console.log(md_val, meat_val, nood_val, dishCustom_val, numberofplates_val);
-  
-let prod_Temp = {
-  md_val: {
-    Sichat: 'Sichat',
-    KyayOh: 'KyayOh',
-    'KyayOh Sichat': 'KyayOh Sichat',
-  },
-  meat_val: {
-    Pork: 'Pork',
-    Poultry: 'Poultry',
-  },
-  nood_val: {
-    Vermicelli: 'Vermicelli',
-    Wheat: 'Wheat',
-  },
-}
-  // let cartItem = {
-  //   objec: {},
 
-  //   get getGetter() {
-  //     return this.objec;
-  //   },
-  //   set setSetter(set) {
-  //     this.objec = set;
-  //   }
-  // };
+  let rTmpl_Items = {
+    md_val: {
+      Sichat: 'Sichat',
+      KyayOh: 'KyayOh',
+      'KyayOh Sichat': 'KyayOh Sichat',
+    },
+    meat_val: {
+      Pork: 'Pork',
+      Poultry: 'Poultry',
+    },
+    nood_val: {
+      Vermicelli: 'Vermicelli',
+      Wheat: 'Wheat',
+    },
+  }
 
   // if user doesn't select any, show hidden warning.
   if (md_val, meat_val, nood_val, numberofplates_val == 0) {
     hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> Please select Choices marked by {*}</span> </label></div>`;
     hidInvalidWarn.hidden = false;
-
     return;
   }
+  hidInvalidWarn.hidden = true;
+  // if is there any customization.
+  if (dishCustom_val == 0) dishCustom_val = null;
+  // if 'check' against prod_temp.
+  if (!!rTmpl_Items.md_val[md_val] && !!rTmpl_Items.meat_val[meat_val] && !!rTmpl_Items.nood_val[nood_val]) 
+  {}
   else {
-    hidInvalidWarn.hidden = true;
+    hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> The item you selected doesn't exist.</span> </label></div>`;
+    hidInvalidWarn.hidden = false;
+    console.log ("not okay");
+    return;
+  }
+  // if 'check' spamming more than 20 click on addingToCard.
+  if (addingToCardCountStart > 20) {
+    hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> You have already submitted this form 20 times. Please refresh the page or please submit a new form.</span> </label></div>`;
+    hidInvalidWarn.hidden = false;
+    return;
+  };
+  // create 'obj' main dish.
+  const cObj_md = {
+    name: md_val
+      + ',' + meat_val
+      + ',' + nood_val
+      + ',' + dishCustom_val ?? 'No Customization'};
+  // read 'name' to get price.
+  const md_type = cObj_md.name.split(',')[0];
+  let price;
+  if (md_type === "Sichat") { price = 1500; }
+  else if (md_type === "KyayOh") { price = 4000; }
+  else if (md_type === "KyayOh Sichat") { price = 4300; }
+  // create 'obj' items.
+  const cObj_itemsField = {
+    ... cObj_md
+    , amount  : price
+    , quantity: numberofplates_val};
+  // if 'check' cart contain zero type.
+  if (cart.length == 0) cart.push(cObj_itemsField);
+  else {
+    const el = getElOfTheOrderAlrdyContain(cObj_itemsField, cart);
+    // if there's any type that already contained, or else simply push.
+    if (true && el) {
+      const noofplates_Inc  = parseInt(el.quantity) + parseInt(numberofplates_val) + '';
+      cart = cart.filter(t => t !== el);
 
-    // if is there any customization.
-    if (dishCustom_val == 0) dishCustom_val = null;
-    // if check against prod_temp.
-    if (!!prod_Temp.md_val[md_val] && !!prod_Temp.meat_val[meat_val] && !!prod_Temp.nood_val[nood_val]) 
-    {}
-    else {
-      hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> The item you selected doesn't exist.</span> </label></div>`;
-      hidInvalidWarn.hidden = false;
-      console.log ("not okay");
-      return;
+      const replacinObj = {
+        ... cObj_md
+        , amount  : price
+        , quantity: noofplates_Inc};
+      cart.push(replacinObj);
     }
-
-    const compareObj = { md_val, meat_val, nood_val, dishCustom_val, numberofplates_val};
-    
-    // if check spamming more than 20 click on addingToCard.
-    if (addingToCardCountStart < 20){
-      // if (addingToCardCountStart >= 0 && addingToCardCountStart < 10) getToken = get_authToken();
-      // if  check cart contain 0 type.
-      if (cart.length == 0) cart.push(compareObj);
-      else {
-        const el = getElOfTheOrderAlrdyContain(compareObj, cart);
-
-        // if there's any type that already contained, or else simply push.
-        if (true && el) {
-          const noofplates_Inc  = parseInt(el.numberofplates_val) + parseInt(numberofplates_val) + '';
-          cart = cart.filter(t => t !== el);
-          
-          const replacinObj = {md_val, meat_val, nood_val, dishCustom_val, numberofplates_val: noofplates_Inc};
-          cart.push(replacinObj);
-        }
-        else {
-          cart.push(compareObj);
-        }
-      }
-      console.log(JSON.stringify(cart, null, "  "));
-      addingToCardCountStart++;
-      return cart;
-    }
     else {
-      hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> You have already submitted this form 20 times. Please refresh the page or please submit a new form.</span> </label></div>`;
-      hidInvalidWarn.hidden = false;
+      cart.push(cObj_itemsField);
     }
   }
+  // return and count click.
+  addingToCardCountStart++;
+  return cart;
 }
-
 const getTtlOfCalcPricesQty = (list) => {
   let price;
 
   return list.reduce( (sum, cur) => {
-      const {md_val, numberofplates_val} = cur;
-      
-      if (md_val === "Sichat") { price = 1500; }
-      else if (md_val === "KyayOh") { price = 4000; }
-      else if (md_val === "KyayOh Sichat") { price = 4300; }
+      const {name, quantity} = cur;
+      const md_type = name.split(',')[0];
 
-      return price * numberofplates_val + sum;
+      if (md_type === "Sichat") { price = 1500; }
+      else if (md_type === "KyayOh") { price = 4000; }
+      else if (md_type === "KyayOh Sichat") { price = 4300; }
+
+      return price * quantity + sum;
   }, 0)
 }
-
 const getElOfTheOrderAlrdyContain = (obj, list) => {
   return list.find((t) =>
-    t.md_val === obj.md_val && 
-    t.meat_val === obj.meat_val &&
-    t.nood_val === obj.nood_val &&
-    t.dishCustom_val === obj.dishCustom_val
-  ); 
+    t.name === obj.name
+  );
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  onLoad();
-  // get_authToken();
-});
-
-submitfrm1.addEventListener("click", event => {
-  event.preventDefault();
-  create_ordLst();
-});
-
-submitfrm2.addEventListener("click", event => {
-  event.preventDefault();
-
-  post_chkout();
-});
+// // import * as NodeRSA from '../node_modules/node-rsa/src/NodeRSA.js';
+// //'application/x-www-form-urlencoded'
+// // let cartItem = {
+// //   objec: {},
+// //   get getGetter() {
+// //     return this.objec;
+// //   },
+// //   set setSetter(set) {
+// //     this.objec = set;
+// //   }
+// // };
+// // const isVarAPureObj = (obj) => {
+// //     return (typeof obj === 'object' &&
+// //     !Array.isArray(obj) &&
+// //     obj !== null);
+// // }
+// // console.log(md_val, meat_val, nood_val, dishCustom_val, numberofplates_val);
+// // console.log(JSON.stringify(cart, null, " "));
