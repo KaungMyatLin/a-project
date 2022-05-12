@@ -1,5 +1,5 @@
 const NodeRSA = require('node-rsa');            // Commonjs_Module
-// import constants from 'apiIntePcs_Const  ';   // ES_Module
+import constants from './constants/apiIntePcs_Const';   // ES_Module
 
 // DOMObj let and const variables
 const md_val_select = document.querySelector("#main_dish_div select");
@@ -46,7 +46,7 @@ addtoListfrm.addEventListener("click", event => {
 });
 alertList.addEventListener("click", event => {
   event.preventDefault();
-  alert();
+  alert(JSON.stringify(payload_unencrypt, null, " "));
 });
 submitfrm2.addEventListener("click", event => {
   event.preventDefault();
@@ -55,6 +55,7 @@ submitfrm2.addEventListener("click", event => {
 
 // global let variables
 let cart = [];
+let payload_unencrypt = {};
 let addingToCardCountStart = 0;
 let getToken = '';
 
@@ -83,15 +84,16 @@ async function post_chkout() {
   const des_val = des_inp.value;
 
   // if user doesn't select any, show hidden warning.
-  if (typ_sel, mtd_sel == 0 && fn_val, ln_val, ph_val, add_inp, des_inp == '') {
+  if (typ_sel, mtd_sel == 0 && fn_val, ln_val, ph_val == '') {
     hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> Please select Choices marked by {*}</span> </label></div>`;
     hidInvalidWarn.hidden = false;
+    return;
   }
 
-  //get orderId & calculatedTotal.
+  // get 'const' orderId & calculatedTotal.
   const orderId = getRandomIntInclusive(0,1000000000);
   const total = getTtlOfCalcPricesQty(cart);
-
+  // create 'obj' postPayload.
   const cObj_postPayload = {
     providerName: typ_val,
     methodName: mtd_val,
@@ -101,14 +103,10 @@ async function post_chkout() {
     customerName: fn_val + " " + ln_val,
     Items: cart
   };
-
-  console.log(JSON.stringify(cart, null, " "));
-  const pubKey = "-----BEGIN PUBLIC KEY-----\n"+
-  "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCil81JlfqDrdXNKbKmv6pPbPPs6p/qWhtFldNBP3mjtroC2TrPEeNQXnNf23Ijvwlsf07V8eHDEd9j05A2B56OaTwsgOgaaSHjSA6tinbKmyxllAxzAWGF37+ice0ts13HYNXGsLGqYTREzF+IDKWEKcwmey4tmufxPQA/vrTEAQIDAQAB\n"+
-  "-----END PUBLIC KEY-----\n";
+  payload_unencrypt = cObj_postPayload;
 
   const nodersa = new NodeRSA();
-  nodersa.importKey(pubKey, 'pkcs8-public');
+  nodersa.importKey(constants.pubKey, 'pkcs8-public');
   // (keyData, [format])
   // keyData = {PEM string|Buffer containing PEM string|Buffer containing DER encoded data|Object contains key components}
   // formt = [scheme-[key_type]-[output_type] ]
@@ -122,21 +120,23 @@ async function post_chkout() {
   console.log("postPayload_dataObj: ", cObj_postPayload);
   console.log("payload: "+payload);
 
-  getToken = 'cbf78574-50f4-4f1e-bc4d-6280436b2915' ?? get_authToken();
+  getToken = constants.getToken ?? get_authToken();
 
   sendHttpReq("POST",
-  `https://api.dinger.asia/api/pay`, payload, 'multipart/form-data', getToken).then(res => {
+    constants.payapi, payload, constants.payHttpPostMIME, getToken).then(res => {
     console.log(res);
   });
 
   let oLocation = '';
   const {providerName, methodName} = cObj_postPayload;
   // location.assign("http://www.mozilla.org");
+
+  console.log(JSON.stringify(cObj_postPayload, null, " "));
 }
 const get_authToken = () => {
   sendHttpReq(
     "GET",
-    `https://api.dinger.asia/api/token?projectName=form&apiKey=r81pnlf.qBJ18LvnTvcxw2nIAhcqBu2yNP4&merchantName=kaung myat`
+    constants.getapi
   )
   .then(resp => {
         console.log(resp); 
