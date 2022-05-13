@@ -86,7 +86,7 @@ const rTmpl_flds = {
 
 // functions
 const sendHttpReq = (method, url, {payload = undefined, contType = "application/json", bearerToken = undefined}) => {
-  const Authorization = bearerToken ? undefined :"Bearer " + bearerToken;
+  const Authorization = bearerToken ? undefined : "Bearer " + bearerToken;
   return fetch(url, {
     method,
     body: payload,
@@ -94,8 +94,32 @@ const sendHttpReq = (method, url, {payload = undefined, contType = "application/
       "Authorization": Authorization,
       "Content-type": contType,
     },
-  }).then(res => {
-    return res.json();
+  })
+  .then(res => {
+      console.log(resp);
+      if (res.status <= 200 && res.status > 300) return new Promise(() => {
+          throw new Error(
+            "Something went wrong between you sent and server receiving"
+          )});
+      return res;
+  })
+  .then(res => {
+      console.log(res);
+      if(res.code == "000") { 
+        return res.json();
+      } //guard clause
+
+      return new Promise(() => {
+        throw new Error(
+          " server responsed with backend error code: " +
+          res.code +
+          " - responsed message: " +
+          res.message
+          );
+      })
+  })
+  .catch(error => {
+      console.log(error);
   });
 }
 async function post_chkout() {
@@ -164,31 +188,9 @@ async function post_chkout() {
 const get_authToken = () => {
   sendHttpReq("GET"
     ,constants.getApi, {contType:'text/plain'}  )
-  .then(resp => {
-        console.log(resp);
-        if (resp.status <= 200 && resp.status > 300) return new Promise(() => {
-                throw new Error(
-                  "Something went wrong between you sent and server receiving"
-                )});
-        return resp;
+  .then(res => {
+    return res.response.paymentToken;
   })
-  .then(resp => {
-    console.log(resp);
-        if(resp.code == "000") {console.log(getToken); return resp.response.paymentToken;} //guard clause
-
-        return new Promise(() => {
-          throw new Error(
-            " server responsed with backend error code: " +
-            resp.code +
-            " - responsed message: " +
-            resp.message
-            );
-          })
-  })
-  .catch(error => {
-        alert("Something went wrong during GET response\n" + error);
-        console.log(error);
-  });
 }
 const getRandomIntInclusive = (min, max) => {
   min = Math.ceil(min);
