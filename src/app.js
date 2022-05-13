@@ -53,11 +53,36 @@ submitfrm2.addEventListener("click", event => {
   post_chkout();
 });
 
-// global let variables
+// global let variables & templates
 let cart = [];
 let payload_unencrypt = {};
 let addingToCardCountStart = 0;
 let getToken = '';
+let rTmpl_Items = {
+  md_val: {
+    Sichat: 'Sichat',
+    KyayOh: 'KyayOh',
+    'KyayOh Sichat': 'KyayOh Sichat',
+  },
+  meat_val: {
+    Pork: 'Pork',
+    Poultry: 'Poultry',
+  },
+  nood_val: {
+    Vermicelli: 'Vermicelli',
+    Wheat: 'Wheat',
+  },
+}
+const rTmpl_flds = {
+  pp: {
+    AYA: "AYA Pay",
+    KBZ: "KBZ Pay"
+  },
+  pm: {
+    QR: 'QR',
+    PIN: 'PIN',
+  },
+}
 
 // functions
 const sendHttpReq = (method, url, {payload = undefined, contType = "application/json", bearerToken = undefined}) => {
@@ -81,14 +106,15 @@ async function post_chkout() {
   const mtd_val = mtd_sel.value;
   const add_val = add_inp.value;
   const des_val = des_inp.value;
-
   // if user doesn't select any, show hidden warning.
-  if (typ_sel, mtd_sel == 0 && fn_val, ln_val, ph_val == '') {
-    hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> Please select Choices marked by {*}</span> </label></div>`;
+  if (typ_val, mtd_val, fn_val, ln_val, ph_val == '') 
+    return;
+  // if 'check' against Template pp and pm.
+  if (!(rTmpl_flds.pp[typ_val] && rTmpl_flds.pm[mtd_val])){
+    hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> The item you selected doesn't exist.</span> </label></div>`;
     hidInvalidWarn.hidden = false;
     return;
   }
-
   // get 'const' orderId & calculatedTotal.
   const orderId = getRandomIntInclusive(0,1000000000);
   const total = getTtlOfCalcPricesQty(cart);
@@ -96,10 +122,12 @@ async function post_chkout() {
   const cObj_postPayload = {
     providerName: typ_val,
     methodName: mtd_val,
-    totalAmount: total,
     orderId: orderId + '',
     customerPhone: ph_val,
     customerName: fn_val + ' ' + ln_val,
+    description: des_val ?? '',
+    customerAddress: add_val ?? '',
+    totalAmount: total,
     Items: cart
   };
   payload_unencrypt = cObj_postPayload;
@@ -173,39 +201,16 @@ const create_ordLst = () => {
   const nood_val = nood_val_select.value;
   let dishCustom_val = dishCustom_val_select.value;
   const numberofplates_val = numberofplates_val_input.value;
-
-  let rTmpl_Items = {
-    md_val: {
-      Sichat: 'Sichat',
-      KyayOh: 'KyayOh',
-      'KyayOh Sichat': 'KyayOh Sichat',
-    },
-    meat_val: {
-      Pork: 'Pork',
-      Poultry: 'Poultry',
-    },
-    nood_val: {
-      Vermicelli: 'Vermicelli',
-      Wheat: 'Wheat',
-    },
-  }
-
   // if user doesn't select any, show hidden warning.
-  if (md_val, meat_val, nood_val, numberofplates_val == 0) {
-    hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> Please select Choices marked by {*}</span> </label></div>`;
-    hidInvalidWarn.hidden = false;
+  if (md_val, meat_val, nood_val, numberofplates_val == 0)
     return;
-  }
   hidInvalidWarn.hidden = true;
   // if is there any customization.
   if (dishCustom_val == 0) dishCustom_val = null;
-  // if 'check' against prod_temp.
-  if (!!rTmpl_Items.md_val[md_val] && !!rTmpl_Items.meat_val[meat_val] && !!rTmpl_Items.nood_val[nood_val]) 
-  {}
-  else {
+  // if 'check' against Template items.
+  if (!(rTmpl_Items.md_val[md_val] && rTmpl_Items.meat_val[meat_val] && rTmpl_Items.nood_val[nood_val])) {
     hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> The item you selected doesn't exist.</span> </label></div>`;
     hidInvalidWarn.hidden = false;
-    console.log ("not okay");
     return;
   }
   // if 'check' spamming more than 20 click on addingToCard.
