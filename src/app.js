@@ -11,13 +11,13 @@ const alertList = document.querySelector("#frm1_checkout button");
 const addtoListfrm = document.querySelector("#frm1_done button");
 const submitfrm2 = document.querySelector("#frm2_checkout button");
 let hidInvalidWarn = document.querySelector("#hidInvalidWarn");
-const fn_inp = document.querySelector(".fn input").value;
-const ln_inp = document.querySelector(".ln input").value;
-const ph_inp = document.querySelector(".field2 input").value;
-const typ_sel = document.querySelector(".field6 select").value;
-const mtd_sel = document.querySelector(".field7 select").value;
-const add_inp = document.querySelector(".field3 input").value;
-const des_inp = document.querySelector(".field4 input").value;
+const fn_inp = document.querySelector(".fn input");
+const ln_inp = document.querySelector(".ln input");
+const ph_inp = document.querySelector(".field2 input");
+const typ_sel = document.querySelector(".field6 select");
+const mtd_sel = document.querySelector(".field7 select");
+const add_inp = document.querySelector(".field3 input");
+const des_inp = document.querySelector(".field4 input");
 
 // functional Events
 function onLoad() {
@@ -46,7 +46,7 @@ addtoListfrm.addEventListener("click", event => {
 });
 alertList.addEventListener("click", event => {
   event.preventDefault();
-  alert(JSON.stringify(payload_unencrypt, null, " "));
+  alert(JSON.stringify(cart, null, " "));
 });
 submitfrm2.addEventListener("click", event => {
   event.preventDefault();
@@ -61,11 +61,9 @@ let getToken = '';
 
 // functions
 const sendHttpReq = (method, url, payload = undefined, contType, bearerToken = undefined) => {
-  const formData = new FormData();
-  formData.append("payload", payload);
   return fetch(url, {
     method,
-    body: formData,
+    body: payload,
     headers: {
       "Authorization": "Bearer " + bearerToken,
       "Content-type": contType ?? "application/json",
@@ -100,7 +98,7 @@ async function post_chkout() {
     totalAmount: total,
     orderId: orderId + '',
     customerPhone: ph_val,
-    customerName: fn_val + " " + ln_val,
+    customerName: fn_val + ' ' + ln_val,
     Items: cart
   };
   payload_unencrypt = cObj_postPayload;
@@ -109,7 +107,7 @@ async function post_chkout() {
   nodersa.importKey(constants.pubKey, 'pkcs8-public');
   // (keyData, [format])
   // keyData = {PEM string|Buffer containing PEM string|Buffer containing DER encoded data|Object contains key components}
-  // formt = [scheme-[key_type]-[output_type] ]
+  // format = [scheme-[key_type]-[output_type] ]
   // Scheme = 'pkcs1' or 'pkcs8' or 'openssh' or 'components'. Default 'pkcs1_oaep'.
   // Key type = 'private' or 'public'. Default 'private'.
   // output_type = 'pem' — Base64 encoded with header and footer. Used by default, 'der' — Binary encoded key data.
@@ -119,18 +117,20 @@ async function post_chkout() {
 
   console.log("postPayload_dataObj: ", cObj_postPayload);
   console.log("payload: "+payload);
-
+  // get 'token' to send in header field.
   getToken = constants.getToken ?? get_authToken();
-
+  // appending 'base64' encoding as form field in body.
+  const formData = new FormData();
+  formData.append("payload", payload);
   sendHttpReq("POST",
-    constants.payapi, payload, constants.payHttpPostMIME, getToken).then(res => {
+    constants.payapi, formData, constants.payHttpPostMIME, getToken).then(res => {
     console.log(res);
   });
-
+  // get 'providerName and methodName' to redirect respectively.
   let oLocation = '';
   const {providerName, methodName} = cObj_postPayload;
-  // location.assign("http://www.mozilla.org");
-
+  // // if (providerName === 'AYA')
+  // // location.assign("http://www.mozilla.org");
   console.log(JSON.stringify(cObj_postPayload, null, " "));
 }
 const get_authToken = () => {
@@ -139,7 +139,7 @@ const get_authToken = () => {
     constants.getapi
   )
   .then(resp => {
-        console.log(resp); 
+        console.log(resp);
         if (resp.status <= 200 && resp.status > 300) return new Promise(() => {
                 throw new Error(
                   "Something went wrong between you sent and server receiving"
