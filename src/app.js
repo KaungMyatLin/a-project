@@ -60,13 +60,14 @@ let addingToCardCountStart = 0;
 let getToken = '';
 
 // functions
-const sendHttpReq = (method, url, payload = undefined, contType, bearerToken = undefined) => {
+const sendHttpReq = (method, url, {payload = undefined, contType = "application/json", bearerToken = undefined}) => {
+  const Authorization = bearerToken ? undefined :"Bearer " + bearerToken;
   return fetch(url, {
     method,
     body: payload,
     headers: {
-      "Authorization": "Bearer " + bearerToken,
-      "Content-type": contType ?? "application/json",
+      "Authorization": Authorization,
+      "Content-type": contType,
     },
   }).then(res => {
     return res.json();
@@ -118,14 +119,13 @@ async function post_chkout() {
   console.log("postPayload_dataObj: ", cObj_postPayload);
   console.log("payload: "+payload);
   // get 'token' to send in header field.
-  getToken = constants.getToken ?? get_authToken();
+  getToken = constants.getToken ?? get_authToken() ?? null;
   // appending 'base64' encoding as form field in body.
   const formData = new FormData();
-  formData.append("payload", payload);
-  sendHttpReq("POST",
-    constants.payapi, formData, constants.payHttpPostMIME, getToken).then(res => {
-    console.log(res);
-  });
+  formData.append('payload', 'payload='+payload);
+  sendHttpReq("POST"
+    ,constants.payApi, {payload: formData, contType: constants.payHttpPostMIME, bearerToken: getToken})
+    .then(res => { console.log(res); });
   // get 'providerName and methodName' to redirect respectively.
   let oLocation = '';
   const {providerName, methodName} = cObj_postPayload;
@@ -134,18 +134,18 @@ async function post_chkout() {
   console.log(JSON.stringify(cObj_postPayload, null, " "));
 }
 const get_authToken = () => {
-  sendHttpReq(
-    "GET",
-    constants.getapi
-  )
+  sendHttpReq("GET"
+    ,constants.getApi, {contType:'text/plain'}  )
   .then(resp => {
         console.log(resp);
         if (resp.status <= 200 && resp.status > 300) return new Promise(() => {
                 throw new Error(
                   "Something went wrong between you sent and server receiving"
                 )});
+        return resp;
   })
   .then(resp => {
+    console.log(resp);
         if(resp.code == "000") {console.log(getToken); return resp.response.paymentToken;} //guard clause
 
         return new Promise(() => {
