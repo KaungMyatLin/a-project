@@ -37,6 +37,7 @@ function onLoad() {
 }
 document.addEventListener("DOMContentLoaded", () => {
   onLoad();
+  // // getToken = constants.getToken ?? get_authToken().json() ?? "test null";
 });
 addtoListfrm.addEventListener("click", event => {
   event.preventDefault();
@@ -55,7 +56,7 @@ let cart = [];
 let payload_unencrypt = {};
 let addingToCardCountStart = 0;
 let getToken = '';
-let rTmpl_Items = {
+const rTmpl_Items = {
   md_val: {
     Sichat: 'Sichat',
     KyayOh: 'KyayOh',
@@ -81,20 +82,19 @@ const rTmpl_flds = {
   },
 }
 // functions
-const sendHttpReq = (method, url, {payload = undefined, contType = "application/json", bearerToken = undefined} = {}) => {
-  const Authorization = bearerToken ? "Bearer " + bearerToken : undefined ;
+const sendHttpReq = (method, url, {payload, contType = "application/json", bearerToken} = {}) => {
   console.log("contType is " + contType);
   return fetch(url, {
     method,
     body: payload,
     headers: {
-      "Authorization": Authorization,
-      "Content-type": contType,
+      ...(contType && {"Content-type": contType})
+      ,...(bearerToken && {"Authorization": "Bearer " + bearerToken})
     },
   })
   .then(res => {
       console.log(res);
-      if (res.status <= 200 && res.status > 300) return new Promise(() => {
+      if (res.status < 200 && res.status >= 300) return new Promise(() => {
           throw new Error(
             "Something went wrong between you sent and server receiving"
           )});
@@ -102,7 +102,7 @@ const sendHttpReq = (method, url, {payload = undefined, contType = "application/
   })
   .then(res => {
       console.log(res);
-      if(res.code == "000") { 
+      if(res.code == "000") {
         return res.json();
       } //guard clause
 
@@ -119,6 +119,13 @@ const sendHttpReq = (method, url, {payload = undefined, contType = "application/
       console.log(error);
   });
 }
+async function get_authToken() {
+  return await sendHttpReq("GET"
+    ,constants.getApi)
+  .then(res => {
+    return res.json();
+  })
+}
 async function post_chkout() {
   const fn_val = fn_inp.value;
   const ln_val = ln_inp.value;
@@ -128,7 +135,7 @@ async function post_chkout() {
   const add_val = add_inp.value;
   const des_val = des_inp.value;
   // if user doesn't select any, show hidden warning.
-  if (typ_val, mtd_val, fn_val, ln_val, ph_val == '') 
+  if (typ_val, mtd_val, fn_val, ln_val, ph_val == '')
     return;
   // if 'check' against Template pp and pm.
   if (!(rTmpl_flds.pp[typ_val] && rTmpl_flds.pm[mtd_val])){
@@ -173,21 +180,14 @@ async function post_chkout() {
   const formData = new FormData();
   formData.append('payload', 'payload='+payload);
   const res = await sendHttpReq("POST"
-    ,constants.payApi, {payload: formData, contType: constants.payHttpPostMIME, bearerToken: getToken})
-    .then(res => { console.log(res); });
+    ,constants.payApi, {payload: formData, contType: constants.payHttpPostMIME, bearerToken: getToken});
+  console.log(res);
   // get 'providerName and methodName' to redirect respectively.
   let oLocation = '';
   const {providerName, methodName} = cObj_postPayload;
   // // if (providerName === 'AYA')
   // // location.assign("http://www.mozilla.org");
   console.log(JSON.stringify(cObj_postPayload, null, " "));
-}
-async function get_authToken() {
-  return await sendHttpReq("GET"
-    ,constants.getApi)
-  .then(res => {
-    return JSON.stringify(res) ;
-  })
 }
 const getRandomIntInclusive = (min, max) => {
   min = Math.ceil(min);
