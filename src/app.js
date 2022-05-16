@@ -1,6 +1,5 @@
 const NodeRSA = require('node-rsa');            // Commonjs_Module
 import constants from './constants/apiIntePcs_Const';   // ES_Module
-
 // DOMObj let and const variables
 const md_val_select = document.querySelector("#main_dish_div select");
 const meat_val_select = document.querySelector("#choose_meat_div select")
@@ -18,7 +17,6 @@ const typ_sel = document.querySelector(".field6 select");
 const mtd_sel = document.querySelector(".field7 select");
 const add_inp = document.querySelector(".field3 input");
 const des_inp = document.querySelector(".field4 input");
-
 // functional Events
 function onLoad() {
   const mainDish_ddm = document.querySelector("#main_dish");
@@ -52,7 +50,6 @@ submitfrm2.addEventListener("click", event => {
   event.preventDefault();
   post_chkout();
 });
-
 // global let variables & templates
 let cart = [];
 let payload_unencrypt = {};
@@ -83,10 +80,10 @@ const rTmpl_flds = {
     PIN: 'PIN',
   },
 }
-
 // functions
-const sendHttpReq = (method, url, {payload = undefined, contType = "application/json", bearerToken = undefined}) => {
-  const Authorization = bearerToken ? undefined : "Bearer " + bearerToken;
+const sendHttpReq = (method, url, {payload = undefined, contType = "application/json", bearerToken = undefined} = {}) => {
+  const Authorization = bearerToken ? "Bearer " + bearerToken : undefined ;
+  console.log("contType is " + contType);
   return fetch(url, {
     method,
     body: payload,
@@ -96,7 +93,7 @@ const sendHttpReq = (method, url, {payload = undefined, contType = "application/
     },
   })
   .then(res => {
-      console.log(resp);
+      console.log(res);
       if (res.status <= 200 && res.status > 300) return new Promise(() => {
           throw new Error(
             "Something went wrong between you sent and server receiving"
@@ -175,7 +172,7 @@ async function post_chkout() {
   // appending 'base64' encoding as form field in body.
   const formData = new FormData();
   formData.append('payload', 'payload='+payload);
-  sendHttpReq("POST"
+  const res = await sendHttpReq("POST"
     ,constants.payApi, {payload: formData, contType: constants.payHttpPostMIME, bearerToken: getToken})
     .then(res => { console.log(res); });
   // get 'providerName and methodName' to redirect respectively.
@@ -185,11 +182,11 @@ async function post_chkout() {
   // // location.assign("http://www.mozilla.org");
   console.log(JSON.stringify(cObj_postPayload, null, " "));
 }
-const get_authToken = () => {
-  sendHttpReq("GET"
-    ,constants.getApi, {contType:'text/plain'}  )
+async function get_authToken() {
+  return await sendHttpReq("GET"
+    ,constants.getApi)
   .then(res => {
-    return res.response.paymentToken;
+    return JSON.stringify(res) ;
   })
 }
 const getRandomIntInclusive = (min, max) => {
