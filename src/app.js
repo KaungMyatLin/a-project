@@ -177,10 +177,11 @@ async function post_chkout() {
   // get 'token' to send in header field.
   getToken = constants.getToken ?? get_authToken() ?? null;
   // appending 'base64' encoding as form field in body.
-  const formData = new FormData();
-  formData.append('payload', 'payload='+payload);
+  const fd = new FormData();
+  fd.append('payload', payload);
+  for (let k of fd.keys()) console.log("k: "+k+", v: "+fd.get(k));
   const res = await sendHttpReq("POST"
-    ,constants.payApi, {payload: formData, contType: constants.payHttpPostMIME, bearerToken: getToken});
+    ,constants.payApi, {payload: fd, contType: constants.payHttpPostMIME, bearerToken: getToken});
   console.log(res);
   // get 'providerName and methodName' to redirect respectively.
   let oLocation = '';
@@ -203,15 +204,15 @@ const create_ordLst = () => {
   // if user doesn't select any, show hidden warning.
   if (md_val, meat_val, nood_val, numberofplates_val == 0)
     return;
-  hidInvalidWarn.hidden = true;
-  // if is there any customization.
-  if (dishCustom_val == 0) dishCustom_val = null;
   // if 'check' against Template items.
   if (!(rTmpl_Items.md_val[md_val] && rTmpl_Items.meat_val[meat_val] && rTmpl_Items.nood_val[nood_val])) {
     hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> The item you selected doesn't exist.</span> </label></div>`;
     hidInvalidWarn.hidden = false;
     return;
   }
+  hidInvalidWarn.hidden = true;
+  // if is there any customization.
+  if (dishCustom_val == 0) dishCustom_val = null;
   // if 'check' spamming more than 20 click on addingToCard.
   if (addingToCardCountStart > 20) {
     hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> You have already submitted this form 20 times. Please refresh the page or please submit a new form.</span> </label></div>`;
