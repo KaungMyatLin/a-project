@@ -53,9 +53,8 @@ submitfrm2.addEventListener("click", event => {
 });
 // global let variables & templates
 let cart = [];
-let payload_unencrypt = {};
 let addingToCardCountStart = 0;
-let getToken = '';
+let jsonStr_getTok = '';
 const rTmpl_Items = {
   md_val: {
     Sichat: 'Sichat',
@@ -73,8 +72,8 @@ const rTmpl_Items = {
 }
 const rTmpl_flds = {
   pp: {
-    AYA: "AYA Pay",
-    KBZ: "KBZ Pay"
+    "AYA Pay": "AYA Pay",
+    "KBZ Pay": "KBZ Pay"
   },
   pm: {
     QR: 'QR',
@@ -82,9 +81,8 @@ const rTmpl_flds = {
   },
 }
 // functions
-const sendHttpReq = (method, url, {payload, contType = "application/json", bearerToken} = {}) => {
-  console.log("contType is " + contType);
-  return fetch(url, {
+const sendHttpReq = async (method, url, {payload, contType = "application/json", bearerToken} = {}) => {
+  return await fetch(url, {
     method,
     body: payload,
     headers: {
@@ -93,7 +91,6 @@ const sendHttpReq = (method, url, {payload, contType = "application/json", beare
     },
   })
   .then(res => {
-      console.log(res);
       if (res.status < 200 && res.status >= 300) return new Promise(() => {
           throw new Error(
             "Something went wrong between you sent and server receiving"
@@ -101,11 +98,12 @@ const sendHttpReq = (method, url, {payload, contType = "application/json", beare
       return res;
   })
   .then(res => {
-      console.log(res);
       if(res.code == "000") {
-        return res.json();
+        return res;
       } //guard clause
-
+      if(res.ok) {
+        return res;
+      }
       return new Promise(() => {
         throw new Error(
           " server responsed with backend error code: " +
@@ -125,6 +123,9 @@ async function get_authToken() {
   .then(res => {
     return res.json();
   })
+  .then(prmInJson => {
+    console.log(prmInJson);
+    return prmInJson.response.paymentToken });
 }
 async function post_chkout() {
   const fn_val = fn_inp.value;
@@ -158,7 +159,6 @@ async function post_chkout() {
     totalAmount: total,
     Items: cart
   };
-  payload_unencrypt = cObj_postPayload;
 
   const nodersa = new NodeRSA();
   nodersa.importKey(constants.pubKey, 'pkcs8-public');
@@ -175,14 +175,21 @@ async function post_chkout() {
   console.log("postPayload_dataObj: ", cObj_postPayload);
   console.log("payload: "+payload);
   // get 'token' to send in header field.
-  getToken = constants.getToken ?? get_authToken() ?? null;
+  jsonStr_getTok = constants.getToken ?? await get_authToken() ?? null;
   // appending 'base64' encoding as form field in body.
   const fd = new FormData();
   fd.append('payload', payload);
-  for (let k of fd.keys()) console.log("k: "+k+", v: "+fd.get(k));
+  // // for (let k of fd.keys()) console.log("k: "+k+", v: "+fd.get(k));
   const res = await sendHttpReq("POST"
-    ,constants.payApi, {payload: fd, contType: constants.payHttpPostMIME, bearerToken: getToken});
+    ,constants.payApi, {payload: fd, contType: constants.payHttpPostMIME, bearerToken: jsonStr_getTok});
   console.log(res);
+  const jsonString = res.then(res => {
+    return res.json();
+  })
+  .then(data => {
+    return data;
+  });
+  console.log(jsonString);
   // get 'providerName and methodName' to redirect respectively.
   let oLocation = '';
   const {providerName, methodName} = cObj_postPayload;
