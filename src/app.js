@@ -17,23 +17,12 @@ const typ_sel = document.querySelector(".field6 select");
 const mtd_sel = document.querySelector(".field7 select");
 const add_inp = document.querySelector(".field3 input");
 const des_inp = document.querySelector(".field4 input");
+const email_inp = document.querySelector(".field8 input");
+const billAdd_inp = document.querySelector(".field9 input");
+const billCity_inp = document.querySelector(".field10 input");
 // functional Events
 function onLoad() {
-  const mainDish_ddm = document.querySelector("#main_dish");
-
-  mainDish_ddm.addEventListener("change", e => {
-    const dishcustomization = document.querySelector("#option_customize_div");
-    if ( e.target.options[e.target.options.selectedIndex].text == "--Choose Menu--" 
-    ) {
-      dishcustomization.hidden = true;
-      return;
-    } else if ( e.target.options[e.target.options.selectedIndex].text == "Sichat"
-    ) {
-      dishcustomization.hidden = true;
-    } else {
-      dishcustomization.hidden = false;
-    }
-  });
+  rFrmReaction(md_val_select, pymTyp_ddm);
 }
 document.addEventListener("DOMContentLoaded", () => {
   onLoad();
@@ -73,11 +62,14 @@ const rTmpl_Items = {
 const rTmpl_flds = {
   pp: {
     "AYA Pay": "AYA Pay",
-    "KBZ Pay": "KBZ Pay"
+    "KBZ Pay": "KBZ Pay",
+    Visa: "Visa",
+    Master: "Master",
   },
   pm: {
     QR: 'QR',
     PIN: 'PIN',
+    OTP: 'OTP',
   },
 }
 // functions
@@ -90,28 +82,26 @@ const sendHttpReq = async (method, url, {payload, contType = "application/json",
       ,...(bearerToken && {"Authorization": "Bearer " + bearerToken})
     },
   })
-  .then(res => {
-      if (res.status < 200 && res.status >= 300) return new Promise(() => {
+  .then(resp => {
+      if (resp.status < 200 && resp.status >= 300) {
+        return new Promise(() => {
           throw new Error(
             "Something went wrong between you sent and server receiving"
-          )});
-      return res;
-  })
-  .then(res => {
-      if(res.code == "000") {
-        return res;
-      } //guard clause
-      if(res.ok) {
-        return res;
+        )});
       }
+      return resp;
+  })
+  .then(resp => {
+      if(resp.code == "000" || resp.ok) {
+        return resp;
+      } //guard clause
       return new Promise(() => {
         throw new Error(
           " server responsed with backend error code: " +
-          res.code +
+          resp.code +
           " - responsed message: " +
-          res.message
-          );
-      })
+          resp.message
+      )});
   })
   .catch(error => {
       console.log(error);
@@ -124,7 +114,6 @@ async function get_authToken() {
     return res.json();
   })
   .then(prmInJson => {
-    console.log(prmInJson);
     return prmInJson.response.paymentToken });
 }
 async function post_chkout() {
@@ -145,7 +134,7 @@ async function post_chkout() {
     return;
   }
   // get 'const' orderId & calculatedTotal.
-  const orderId = getRandomIntInclusive(0,1000000000);
+  const orderId = getRandomIntInclusive(0,10000);
   const total = getTtlOfCalcPricesQty(cart);
   // create 'obj' postPayload.
   const cObj_postPayload = {
@@ -177,11 +166,11 @@ async function post_chkout() {
   // get 'token' to send in header field.
   jsonStr_getTok = constants.getToken ?? await get_authToken() ?? null;
   // appending 'base64' encoding as form field in body.
-  const fd = new FormData();
-  fd.append('payload', payload);
+  // const fd = new FormData();
+  // fd.append('', "payload="+payload);
   // // for (let k of fd.keys()) console.log("k: "+k+", v: "+fd.get(k));
   const obj_resD = await sendHttpReq("POST"
-    ,constants.payApi, {payload: fd
+    ,constants.payApi, {payload: "payload="+payload
       ,contType: constants.payHttpPostMIME
       ,bearerToken: jsonStr_getTok})
       .then(res => {
@@ -286,7 +275,39 @@ const getElOfTheOrderAlrdyContain = (obj, list) => {
     t.name === obj.name
   );
 }
+const rFrmReaction = (md_ddm, pymTyp_ddm) => {
+  md_ddm.addEventListener("change", e => {
+    if ( e.target.options[e.target.options.selectedIndex].text == "--Choose Menu--" 
+    ) {
+      dishCustom_val_select.hidden = true;
+      return;
+    } else if ( e.target.options[e.target.options.selectedIndex].text == "Sichat"
+    ) {
+      dishCustom_val_select.hidden = true;
+    } else {
+      dishCustom_val_select.hidden = false;
+    }
+  });
 
+  pymTyp_ddm.addEventListener("change", e => {
+    email_inp.hidden = true;
+    billAdd_inp.hidden = true;
+    billCity_inp.hidden = true;
+    let rSelTxt_pymTyp = e.target.options[e.target.options.selectedIndex].text;
+    if ( rSelTxt_pymTyp === "Visa" || rSelTxt_pymTyp === "Master" || rSelTxt_pymTyp === "JCB") {
+                  mtd_sel.childrens.remove();
+                  email_inp.hidden = false;
+                  billAdd_inp.hidden = false;
+                  billCity_inp.hidden = false;
+      return;
+    } else if ( rSelTxt_pymTyp === "WAVE PAY" || rSelTxt_pymTyp === "Citizens" || rSelTxt_pymTyp === "Mytel"
+                || rSelTxt_pymTyp === "Sai Sai Pay" || rSelTxt_pymTyp === "Onepay" || rSelTxt_pymTyp === "MPitesan"  ) {
+                  mtd_sel.childrens.remove();
+    } else {
+      dishcustomization.hidden = false;
+    }
+  });
+}
 // // import * as NodeRSA from '../node_modules/node-rsa/src/NodeRSA.js';
 // //'application/x-www-form-urlencoded'
 // // let cartItem = {

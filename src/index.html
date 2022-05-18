@@ -149,12 +149,19 @@
 
             <h2 id="frmTtl" >For Payment</h2>
             <div class="frmGrp marginBtm field6">
-                <label for="payment-type">Choose Payment </label>
-                <select id="payment-type" name="payment" class="form-control">
+                <label for="payment_type">Choose Payment </label>
+                <select id="payment_type" name="payment" class="form-control">
                     <option value="">Choose Payment</option>
                     <option value="AYA Pay">AYA Pay</option>
                     <option value="KBZ Pay">KBZ Pay</option>
                     <option value="MPU">MPU</option>
+                    <option value="Visa">Visa</option>
+                    <option value="Master">Master</option>
+                    <option value="WAVE PAY">WAVE PAY</option>
+                    <option value="Citizens">Citizens</option>
+                    <option value="Sai Sai Pay">Sai Sai Pay</option>
+                    <option value="Onepay">Onepay</option>
+                    <option value="MPitesan">MPitesan</option>
                 </select>
             </div>
             <div class="frmGrp marginBtm field7">
@@ -164,6 +171,18 @@
                     <option value="QR">Pay with QR</option>
                     <option value="PIN">Pay with PIN</option>
                 </select>
+            </div>
+            <div class="frmGrp marginBtm field8">
+                <label>Email</label>
+                <input placeholder="your email" name="email" type="text" class="form-control">
+            </div>
+            <div class="frmGrp marginBtm field9">
+                <label>Billing Address</label>
+                <input placeholder="your billing Address" name="billAddress" type="text" class="form-control">
+            </div>
+            <div class="frmGrp marginBtm field10">
+                <label>Billing City</label>
+                <input placeholder="your billing City" name="billCity" type="text" class="form-control">
             </div>
             <div id="hidInvalidWarn" hidden>
                 <label> <span style="color: red !important; display: inline; float: none;"> Please input/ select all fields marked by {*}</span> 
