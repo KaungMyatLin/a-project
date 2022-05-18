@@ -180,16 +180,17 @@ async function post_chkout() {
   const fd = new FormData();
   fd.append('payload', payload);
   // // for (let k of fd.keys()) console.log("k: "+k+", v: "+fd.get(k));
-  const res = await sendHttpReq("POST"
-    ,constants.payApi, {payload: fd, contType: constants.payHttpPostMIME, bearerToken: jsonStr_getTok});
-  console.log(res);
-  const jsonString = res.then(res => {
-    return res.json();
-  })
-  .then(data => {
-    return data;
-  });
-  console.log(jsonString);
+  const obj_resD = await sendHttpReq("POST"
+    ,constants.payApi, {payload: fd
+      ,contType: constants.payHttpPostMIME
+      ,bearerToken: jsonStr_getTok})
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        return data;
+      });
+  console.log(obj_resD);
   // get 'providerName and methodName' to redirect respectively.
   let oLocation = '';
   const {providerName, methodName} = cObj_postPayload;
