@@ -22,7 +22,7 @@ const billAdd_inp = document.querySelector(".field9 input");
 const billCity_inp = document.querySelector(".field10 input");
 // functional Events
 function onLoad() {
-  rFrmReaction(md_val_select, pymTyp_ddm);
+  rFrmReaction(md_val_select, typ_sel);
 }
 document.addEventListener("DOMContentLoaded", () => {
   onLoad();
@@ -125,8 +125,11 @@ async function post_chkout() {
   const add_val = add_inp.value;
   const des_val = des_inp.value;
   // if user doesn't select any, show hidden warning.
-  if (typ_val, mtd_val, fn_val, ln_val, ph_val == '')
+  if (typ_val, mtd_val, fn_val, ln_val, ph_val == ''){
+    hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> Please Fill out all * required boxes.</span> </label></div>`;
+    hidInvalidWarn.hidden = false;
     return;
+  }
   // if 'check' against Template pp and pm.
   if (!(rTmpl_flds.pp[typ_val] && rTmpl_flds.pm[mtd_val])){
     hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> The item you selected doesn't exist.</span> </label></div>`;
@@ -199,8 +202,11 @@ const create_ordLst = () => {
   let dishCustom_val = dishCustom_val_select.value;
   const numberofplates_val = numberofplates_val_input.value;
   // if user doesn't select any, show hidden warning.
-  if (md_val, meat_val, nood_val, numberofplates_val == 0)
+  if (md_val, meat_val, nood_val, numberofplates_val == 0){
+    hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> Please Fill out all * required boxes.</span> </label></div>`;
+    hidInvalidWarn.hidden = false;
     return;
+  }
   // if 'check' against Template items.
   if (!(rTmpl_Items.md_val[md_val] && rTmpl_Items.meat_val[meat_val] && rTmpl_Items.nood_val[nood_val])) {
     hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> The item you selected doesn't exist.</span> </label></div>`;
