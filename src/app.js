@@ -215,20 +215,19 @@ async function post_chkout() {
   // if user doesn't select any, show hidden warning.
   console.dir(typ_sel.options);
   console.dir(typ_sel.options.select);
-  console.log(!(
+  console.log( (
     (typ_val === "Visa" || typ_val === "Master" || typ_val === "JCB") 
     && (ema_val === '' || ba_val === '' || bc_val === ''))
     )
   if ( 
-    // !(cart.length) 
-    // || fn_val == '' || ln_val == '' || ph_val == ''
-    // ||  typ_val == 0 || mtd_val == 0
-    // || 
-        ( 
+    !(cart.length) 
+    || fn_val == '' || ln_val == '' || ph_val == ''
+    || typ_val == 0 || mtd_val == 0
+    ||  (
           (typ_val === "Visa" || typ_val === "Master" || typ_val === "JCB") 
-          && (email_inp === '' || billAdd_inp === '' || billCity_inp === '')
+          && (ema_val === '' || ba_val === '' || bc_val === '')
         )
-      ){
+    ){
     hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> Please Fill out all * required boxes.</span> </label></div>`;
     hidInvalidWarn.hidden = false;
     return;
