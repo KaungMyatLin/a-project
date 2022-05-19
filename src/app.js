@@ -39,6 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const typId_sel = document.querySelector("#payment_type");
   const mtdId_sel = document.querySelector("#payment_method");
+  const email_inp = document.querySelector("#em");
+  const billAdd_inp = document.querySelector("#ba");
+  const billCity_inp = document.querySelector("#bc");
   typId_sel.addEventListener("change", e => {
     email_inp.hidden = true;
     billAdd_inp.hidden = true;
@@ -133,17 +136,19 @@ const rTmpl_flds = {
   pp: {
     "AYA Pay": "AYA Pay",
     "KBZ Pay": "KBZ Pay",
-    MPU: "MPU",
     Visa: "Visa",
     Master: "Master",
     JCB: "JCB",
     MAB: "MAB",
+    MPU: "MPU",
     "WAVE PAY": "WAVE PAY",
     Citizens: "Citizens",
     Mytel: "Mytel",
     "Sai Sai Pay": "Sai Sai Pay",
     Onepay: "Onepay",
     MPitesan: "MPitesan",
+    "CB Pay": "CB Pay",
+    "KBZ Direct Pay": "KBZ Direct Pay"
   },
   pm: {
     QR: 'QR',
@@ -209,7 +214,10 @@ async function post_chkout() {
   const add_val = add_inp.value;
   const des_val = des_inp.value;
   // if user doesn't select any, show hidden warning.
-  if (md_val, meat_val, nood_val, numberofplates_val == 0 && typ_val, mtd_val, fn_val, ln_val, ph_val == ''){
+  console.dir(typ_sel.options);
+  console.dir(typ_sel.options.select);
+  if (md_val, meat_val, nood_val, numberofplates_val == 0 && typ_val, mtd_val, fn_val, ln_val, ph_val == ''
+    || (typ_sel.options[typ_sel.selectedIndex].value === "Visa" || typ_sel.selectedIndex.value === "Master" || typ_sel.selectedIndex.value === "JCB" && email_inp, billAdd_inp, billCity_inp === '')){
     hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> Please Fill out all * required boxes.</span> </label></div>`;
     hidInvalidWarn.hidden = false;
     return;
