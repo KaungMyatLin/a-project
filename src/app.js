@@ -202,10 +202,6 @@ async function get_authToken() {
     return prmInJson.response.paymentToken });
 }
 async function post_chkout() {
-  const md_val = md_sel.value;
-  const meat_val = meat_sel.value;
-  const nood_val = nood_sel.value;
-  const numberofplates_val = noofplat_inp.value;
   const fn_val = fn_inp.value;
   const ln_val = ln_inp.value;
   const ph_val = ph_inp.value;
@@ -213,11 +209,26 @@ async function post_chkout() {
   const mtd_val = mtd_sel.value;
   const add_val = add_inp.value;
   const des_val = des_inp.value;
+  const ema_val = email_inp.value;
+  const ba_val = billAdd_inp.value;
+  const bc_val = billCity_inp.value;
   // if user doesn't select any, show hidden warning.
   console.dir(typ_sel.options);
   console.dir(typ_sel.options.select);
-  if (md_val, meat_val, nood_val, numberofplates_val == 0 && typ_val, mtd_val, fn_val, ln_val, ph_val == ''
-    || (typ_sel.options[typ_sel.selectedIndex].value === "Visa" || typ_sel.selectedIndex.value === "Master" || typ_sel.selectedIndex.value === "JCB" && email_inp, billAdd_inp, billCity_inp === '')){
+  console.log(!(
+    (typ_val === "Visa" || typ_val === "Master" || typ_val === "JCB") 
+    && (ema_val === '' || ba_val === '' || bc_val === ''))
+    )
+  if ( 
+    // !(cart.length) 
+    // || fn_val == '' || ln_val == '' || ph_val == ''
+    // ||  typ_val == 0 || mtd_val == 0
+    // || 
+        ( 
+          (typ_val === "Visa" || typ_val === "Master" || typ_val === "JCB") 
+          && (email_inp === '' || billAdd_inp === '' || billCity_inp === '')
+        )
+      ){
     hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> Please Fill out all * required boxes.</span> </label></div>`;
     hidInvalidWarn.hidden = false;
     return;
@@ -228,6 +239,7 @@ async function post_chkout() {
     hidInvalidWarn.hidden = false;
     return;
   }
+  hidInvalidWarn.hidden = true;
   // get 'const' orderId & calculatedTotal.
   const orderId = getRandomIntInclusive(0,10000);
   const total = getTtlOfCalcPricesQty(cart);
@@ -263,7 +275,7 @@ async function post_chkout() {
   // appending 'base64' encoding as form field in body.
   // const fd = new FormData();
   // fd.append('', "payload="+payload);
-  // // for (let k of fd.keys()) console.log("k: "+k+", v: "+fd.get(k));
+  return;
   const obj_resD = await sendHttpReq("POST"
     ,constants.payApi, {payload: "payload="+payload
       ,contType: constants.payHttpPostMIME
