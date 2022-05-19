@@ -43,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     email_inp.hidden = true;
     billAdd_inp.hidden = true;
     billCity_inp.hidden = true;
+    mtdId_sel.selectedIndex = 0;
     const mtdId_htmlOptCol = mtdId_sel.options;
     if ( e.target.options[e.target.options.selectedIndex].text === "Visa" 
       || e.target.options[e.target.options.selectedIndex].text === "Master" 
