@@ -147,29 +147,35 @@
 
             <br>
 
-            <h2 id="frmTtl" >For Payment</h2>
+            <h2 id="payment_type_div">For Payment</h2>
             <div class="frmGrp marginBtm field6">
                 <label for="payment_type">Choose Payment </label>
                 <select id="payment_type" name="payment" class="form-control">
-                    <option value="">Choose Payment</option>
+                    <option value="0">Choose Payment</option>
                     <option value="AYA Pay">AYA Pay</option>
                     <option value="KBZ Pay">KBZ Pay</option>
-                    <option value="MPU">MPU</option>
                     <option value="Visa">Visa</option>
                     <option value="Master">Master</option>
+                    <option value="JCB">JCB</option>
+                    <option value="MAB">MAB</option>
+                    <option value="MPU">MPU</option>
                     <option value="WAVE PAY">WAVE PAY</option>
                     <option value="Citizens">Citizens</option>
+                    <option value="Mytel">Mytel</option>
                     <option value="Sai Sai Pay">Sai Sai Pay</option>
                     <option value="Onepay">Onepay</option>
                     <option value="MPitesan">MPitesan</option>
+                    <option value="KBZ Direct Pay">KBZ Direct Pay</option>
                 </select>
             </div>
-            <div class="frmGrp marginBtm field7">
+            <div id="payment_method_div" class="frmGrp marginBtm field7">
                 <label for="payment_method">Choose Payment Method </label>
                 <select id="payment_method" name="payment_method" class="form-control">
-                    <option value="">Choose Payment Method</option>
-                    <option value="QR">Pay with QR</option>
-                    <option value="PIN">Pay with PIN</option>
+                    <option value="0">Choose Payment Method</option>
+                    <option value="QR" disabled="false">Pay with QR</option>
+                    <option value="PIN" disabled="false">Pay with PIN</option>
+                    <option value="OTP" disabled="false">Pay with OTP</option>
+                    <option value="PWA" disabled="false">Pay with PWA</option>
                 </select>
             </div>
             <div class="frmGrp marginBtm field8" hidden>

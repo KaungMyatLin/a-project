@@ -2,14 +2,14 @@ const NodeRSA = require('node-rsa');            // Commonjs_Module
 import constants from './constants/apiIntePcs_Const';   // ES_Module
 // DOMObj let and const variables
 const md_sel = document.querySelector("#main_dish_div select");
-const meat_sel = document.querySelector("#choose_meat_div select")
-const nood_sel = document.querySelector("#choose_noodle_div select")
+const meat_sel = document.querySelector("#choose_meat_div select");
+const nood_sel = document.querySelector("#choose_noodle_div select");
 let dCust_sel = document.querySelector("#option_customize_div select")
 const noofplat_inp = document.querySelector("#quantity_div input")
 const alertList = document.querySelector("#frm1_checkout button");
 const addtoListfrm = document.querySelector("#frm1_done button");
 const submitfrm2 = document.querySelector("#frm2_checkout button");
-let hidInvalidWarn = document.querySelector("#hidInvalidWarn");
+let hidInvalidWarn = document.querySelector("#hidInvalidWarn")
 const fn_inp = document.querySelector(".fn input");
 const ln_inp = document.querySelector(".ln input");
 const ph_inp = document.querySelector(".field2 input");
@@ -21,12 +21,81 @@ const email_inp = document.querySelector(".field8 input");
 const billAdd_inp = document.querySelector(".field9 input");
 const billCity_inp = document.querySelector(".field10 input");
 // functional Events
-function onLoad() {
-  rFrmReaction(document.querySelector("#main_dish_div select"), typ_sel);
-}
 document.addEventListener("DOMContentLoaded", () => {
-  onLoad();
-  // // getToken = constants.getToken ?? get_authToken().json() ?? "test null";
+  const mdId_sel = document.querySelector("#main_dish");  //doesn't work with main_dish-div select.
+  mdId_sel.addEventListener("change", e => {
+    const dCust_sel = document.querySelector("#option_customize_div");//doesn't work with option_customize.
+    if ( e.target.options[e.target.options.selectedIndex].text == "--Choose Menu--"
+    ) {
+      dCust_sel.hidden = true;
+      return;
+    } else if ( e.target.options[e.target.options.selectedIndex].text == "Sichat"
+    ) {
+      dCust_sel.hidden = true;
+    } else {
+      dCust_sel.hidden = false;
+    }
+  });
+
+  const typId_sel = document.querySelector("#payment_type");
+  const mtdId_sel = document.querySelector("#payment_method");
+  typId_sel.addEventListener("change", e => {
+    email_inp.hidden = true;
+    billAdd_inp.hidden = true;
+    billCity_inp.hidden = true;
+    const mtdId_htmlOptCol = mtdId_sel.options;
+    if ( e.target.options[e.target.options.selectedIndex].text === "Visa" 
+      || e.target.options[e.target.options.selectedIndex].text === "Master" 
+      || e.target.options[e.target.options.selectedIndex].text === "JCB" 
+      || e.target.options[e.target.options.selectedIndex].text === "MAB") {
+            email_inp.hidden = false;
+            billAdd_inp.hidden = false;
+            billCity_inp.hidden = false;
+            Array.from(mtdId_htmlOptCol).map(opt => {
+              if (opt.value === "QR") opt.disabled = true;
+              if (opt.value === "PIN") opt.disabled = true;
+              if (opt.value === "PWA") opt.disabled = true;
+              if (opt.value === "OTP") opt.disabled = false; //correct
+            })
+    }
+    if ( e.target.options[e.target.options.selectedIndex].text === "WAVE PAY" 
+      || e.target.options[e.target.options.selectedIndex].text === "Citizens" 
+      || e.target.options[e.target.options.selectedIndex].text === "Mytel" 
+      || e.target.options[e.target.options.selectedIndex].text === "Sai Sai Pay" 
+      || e.target.options[e.target.options.selectedIndex].text === "Onepay" 
+      || e.target.options[e.target.options.selectedIndex].text === "MPitesan") {
+            Array.from(mtdId_htmlOptCol).map(opt => {
+              if (opt.value === "QR") opt.disabled = true;
+              if (opt.value === "OTP") opt.disabled = true;
+              if (opt.value === "PWA") opt.disabled = true;
+              if (opt.value === "PIN") opt.disabled = false;
+            })
+    }
+    if ( e.target.options[e.target.options.selectedIndex].text === "KBZ Direct Pay") {
+            Array.from(mtdId_htmlOptCol).map(opt => {
+              if (opt.value === "QR") opt.disabled = true;
+              if (opt.value === "OTP") opt.disabled = true;
+              if (opt.value === "PIN") opt.disabled = true;
+              if (opt.value === "PWA") opt.disabled = false;
+            })
+    }
+    if ( e.target.options[e.target.options.selectedIndex].text === "AYA Pay") {
+            Array.from(mtdId_htmlOptCol).map(opt => {
+              if (opt.value === "OTP") opt.disabled = true;
+              if (opt.value === "PWA") opt.disabled = true;
+              if (opt.value === "QR") opt.disabled = false;
+              if (opt.value === "PIN") opt.disabled = false;
+            })
+    }
+    if ( e.target.options[e.target.options.selectedIndex].text === "KBZ Pay") {
+            Array.from(mtdId_htmlOptCol).map(opt => {
+              if (opt.value === "OTP") opt.disabled = true;
+              if (opt.value === "PIN") opt.disabled = true;
+              if (opt.value === "QR") opt.disabled = false;
+              if (opt.value === "PWA") opt.disabled = false;
+            })
+    }
+  });
 });
 addtoListfrm.addEventListener("click", event => {
   event.preventDefault();
@@ -63,13 +132,23 @@ const rTmpl_flds = {
   pp: {
     "AYA Pay": "AYA Pay",
     "KBZ Pay": "KBZ Pay",
+    MPU: "MPU",
     Visa: "Visa",
     Master: "Master",
+    JCB: "JCB",
+    MAB: "MAB",
+    "WAVE PAY": "WAVE PAY",
+    Citizens: "Citizens",
+    Mytel: "Mytel",
+    "Sai Sai Pay": "Sai Sai Pay",
+    Onepay: "Onepay",
+    MPitesan: "MPitesan",
   },
   pm: {
     QR: 'QR',
     PIN: 'PIN',
     OTP: 'OTP',
+    PWA: 'PWA',
   },
 }
 // functions
@@ -284,38 +363,6 @@ const getElOfTheOrderAlrdyContain = (obj, list) => {
   return list.find((t) =>
     t.name === obj.name
   );
-}
-const rFrmReaction = (md_ddm, pymTyp_ddm) => {
-  md_ddm.addEventListener("change", e => {
-    if ( e.target.options[e.target.options.selectedIndex].text == "--Choose Menu--" 
-    ) {
-      dCust_sel.hidden = true;
-      return;
-    } else if ( e.target.options[e.target.options.selectedIndex].text == "Sichat"
-    ) {
-      dCust_sel.hidden = true;
-    } else {
-      dCust_sel.hidden = false;
-    }
-  });
-
-  pymTyp_ddm.addEventListener("change", e => {
-    email_inp.hidden = true;
-    billAdd_inp.hidden = true;
-    billCity_inp.hidden = true;
-    let rSelTxt_pymTyp = e.target.options[e.target.options.selectedIndex].text;
-    if ( rSelTxt_pymTyp === "Visa" || rSelTxt_pymTyp === "Master" || rSelTxt_pymTyp === "JCB") {
-                  
-                  email_inp.hidden = false;
-                  billAdd_inp.hidden = false;
-                  billCity_inp.hidden = false;
-      return;
-    } else if ( rSelTxt_pymTyp === "WAVE PAY" || rSelTxt_pymTyp === "Citizens" || rSelTxt_pymTyp === "Mytel"
-                || rSelTxt_pymTyp === "Sai Sai Pay" || rSelTxt_pymTyp === "Onepay" || rSelTxt_pymTyp === "MPitesan"  ) {
-                  // mtd_sel.childrens.remove();
-    } else {
-    }
-  });
 }
 // // import * as NodeRSA from '../node_modules/node-rsa/src/NodeRSA.js';
 // //'application/x-www-form-urlencoded'
