@@ -1,11 +1,11 @@
 const NodeRSA = require('node-rsa');            // Commonjs_Module
 import constants from './constants/apiIntePcs_Const';   // ES_Module
 // DOMObj let and const variables
-const md_val_select = document.querySelector("#main_dish_div select");
-const meat_val_select = document.querySelector("#choose_meat_div select")
-const nood_val_select = document.querySelector("#choose_noodle_div select")
-let dishCustom_val_select = document.querySelector("#option_customize_div select")
-const numberofplates_val_input = document.querySelector("#quantity_div input")
+const md_sel = document.querySelector("#main_dish_div select");
+const meat_sel = document.querySelector("#choose_meat_div select")
+const nood_sel = document.querySelector("#choose_noodle_div select")
+let dCust_sel = document.querySelector("#option_customize_div select")
+const noofplat_inp = document.querySelector("#quantity_div input")
 const alertList = document.querySelector("#frm1_checkout button");
 const addtoListfrm = document.querySelector("#frm1_done button");
 const submitfrm2 = document.querySelector("#frm2_checkout button");
@@ -22,7 +22,7 @@ const billAdd_inp = document.querySelector(".field9 input");
 const billCity_inp = document.querySelector(".field10 input");
 // functional Events
 function onLoad() {
-  rFrmReaction(md_val_select, typ_sel);
+  rFrmReaction(document.querySelector("#main_dish_div select"), typ_sel);
 }
 document.addEventListener("DOMContentLoaded", () => {
   onLoad();
@@ -117,6 +117,10 @@ async function get_authToken() {
     return prmInJson.response.paymentToken });
 }
 async function post_chkout() {
+  const md_val = md_sel.value;
+  const meat_val = meat_sel.value;
+  const nood_val = nood_sel.value;
+  const numberofplates_val = noofplat_inp.value;
   const fn_val = fn_inp.value;
   const ln_val = ln_inp.value;
   const ph_val = ph_inp.value;
@@ -125,7 +129,7 @@ async function post_chkout() {
   const add_val = add_inp.value;
   const des_val = des_inp.value;
   // if user doesn't select any, show hidden warning.
-  if (typ_val, mtd_val, fn_val, ln_val, ph_val == ''){
+  if (md_val, meat_val, nood_val, numberofplates_val == 0 && typ_val, mtd_val, fn_val, ln_val, ph_val == ''){
     hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> Please Fill out all * required boxes.</span> </label></div>`;
     hidInvalidWarn.hidden = false;
     return;
@@ -196,11 +200,11 @@ const getRandomIntInclusive = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
 }
 const create_ordLst = () => {
-  const md_val = md_val_select.value;
-  const meat_val = meat_val_select.value;
-  const nood_val = nood_val_select.value;
-  let dishCustom_val = dishCustom_val_select.value;
-  const numberofplates_val = numberofplates_val_input.value;
+  const md_val = md_sel.value;
+  const meat_val = meat_sel.value;
+  const nood_val = nood_sel.value;
+  let dishCustom_val = dCust_sel.value;
+  const numberofplates_val = noofplat_inp.value;
   // if user doesn't select any, show hidden warning.
   if (md_val, meat_val, nood_val, numberofplates_val == 0){
     hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> Please Fill out all * required boxes.</span> </label></div>`;
@@ -285,13 +289,13 @@ const rFrmReaction = (md_ddm, pymTyp_ddm) => {
   md_ddm.addEventListener("change", e => {
     if ( e.target.options[e.target.options.selectedIndex].text == "--Choose Menu--" 
     ) {
-      dishCustom_val_select.hidden = true;
+      dCust_sel.hidden = true;
       return;
     } else if ( e.target.options[e.target.options.selectedIndex].text == "Sichat"
     ) {
-      dishCustom_val_select.hidden = true;
+      dCust_sel.hidden = true;
     } else {
-      dishCustom_val_select.hidden = false;
+      dCust_sel.hidden = false;
     }
   });
 
@@ -301,16 +305,15 @@ const rFrmReaction = (md_ddm, pymTyp_ddm) => {
     billCity_inp.hidden = true;
     let rSelTxt_pymTyp = e.target.options[e.target.options.selectedIndex].text;
     if ( rSelTxt_pymTyp === "Visa" || rSelTxt_pymTyp === "Master" || rSelTxt_pymTyp === "JCB") {
-                  mtd_sel.childrens.remove();
+                  
                   email_inp.hidden = false;
                   billAdd_inp.hidden = false;
                   billCity_inp.hidden = false;
       return;
     } else if ( rSelTxt_pymTyp === "WAVE PAY" || rSelTxt_pymTyp === "Citizens" || rSelTxt_pymTyp === "Mytel"
                 || rSelTxt_pymTyp === "Sai Sai Pay" || rSelTxt_pymTyp === "Onepay" || rSelTxt_pymTyp === "MPitesan"  ) {
-                  mtd_sel.childrens.remove();
+                  // mtd_sel.childrens.remove();
     } else {
-      dishcustomization.hidden = false;
     }
   });
 }
