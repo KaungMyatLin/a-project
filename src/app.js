@@ -228,7 +228,7 @@ async function post_chkout() {
           && (ema_val === '' || ba_val === '' || bc_val === '')
         )
     ){
-    hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> Please Fill out all * required boxes.</span> </label></div>`;
+    hidInvalidWarn.innerHTML = `<span style="color: red !important; display: inline; float: none;"> Please Add 1 item to cart. (or) Please Fill out all * required boxes.</span> </label></div>`;
     hidInvalidWarn.hidden = false;
     return;
   }
@@ -274,7 +274,6 @@ async function post_chkout() {
   // appending 'base64' encoding as form field in body.
   // const fd = new FormData();
   // fd.append('', "payload="+payload);
-  return;
   const obj_resD = await sendHttpReq("POST"
     ,constants.payApi, {payload: "payload="+payload
       ,contType: constants.payHttpPostMIME
