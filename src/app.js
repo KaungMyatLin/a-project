@@ -48,9 +48,8 @@ document.addEventListener("DOMContentLoaded", () => {
     billCity_inp.hidden = true;
     mtdId_sel.selectedIndex = 0;
     const mtdId_htmlOptCol = mtdId_sel.options;
-    if ( e.target.options[e.target.options.selectedIndex].text === "Visa" 
-      || e.target.options[e.target.options.selectedIndex].text === "Master" 
-      || e.target.options[e.target.options.selectedIndex].text === "JCB" 
+    if ( e.target.options[e.target.options.selectedIndex].text === "Visa"
+      || e.target.options[e.target.options.selectedIndex].text === "JCB"
       || e.target.options[e.target.options.selectedIndex].text === "MAB") {
             email_inp.hidden = false;
             billAdd_inp.hidden = false;
@@ -62,11 +61,11 @@ document.addEventListener("DOMContentLoaded", () => {
               if (opt.value === "OTP") opt.disabled = false; //correct
             })
     }
-    if ( e.target.options[e.target.options.selectedIndex].text === "WAVE PAY" 
-      || e.target.options[e.target.options.selectedIndex].text === "Citizens" 
-      || e.target.options[e.target.options.selectedIndex].text === "Mytel" 
-      || e.target.options[e.target.options.selectedIndex].text === "Sai Sai Pay" 
-      || e.target.options[e.target.options.selectedIndex].text === "Onepay" 
+    if ( e.target.options[e.target.options.selectedIndex].text === "WAVE PAY"
+      || e.target.options[e.target.options.selectedIndex].text === "Citizens"
+      || e.target.options[e.target.options.selectedIndex].text === "Mytel"
+      || e.target.options[e.target.options.selectedIndex].text === "Sai Sai Pay"
+      || e.target.options[e.target.options.selectedIndex].text === "Onepay"
       || e.target.options[e.target.options.selectedIndex].text === "MPitesan") {
             Array.from(mtdId_htmlOptCol).map(opt => {
               if (opt.value === "QR") opt.disabled = true;
@@ -213,18 +212,12 @@ async function post_chkout() {
   const ba_val = billAdd_inp.value;
   const bc_val = billCity_inp.value;
   // if user doesn't select any, show hidden warning.
-  console.dir(typ_sel.options);
-  console.dir(typ_sel.options.select);
-  console.log( (
-    (typ_val === "Visa" || typ_val === "Master" || typ_val === "JCB") 
-    && (ema_val === '' || ba_val === '' || bc_val === ''))
-    )
-  if ( 
-    !(cart.length) 
+  if (
+    !(cart.length)
     || fn_val == '' || ln_val == '' || ph_val == ''
     || typ_val == 0 || mtd_val == 0
     ||  (
-          (typ_val === "Visa" || typ_val === "Master" || typ_val === "JCB") 
+          (typ_val === "Visa" || typ_val === "Master" || typ_val === "JCB")
           && (ema_val === '' || ba_val === '' || bc_val === '')
         )
     ){
