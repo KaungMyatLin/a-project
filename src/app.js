@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const mtdId_htmlOptCol = mtdId_sel.options;
     if ( e.target.options[e.target.options.selectedIndex].text === "Visa"
       || e.target.options[e.target.options.selectedIndex].text === "JCB"
-      || e.target.options[e.target.options.selectedIndex].text === "MAB") {
+      || e.target.options[e.target.options.selectedIndex].text === "Master") {
             email_inp.hidden = false;
             billAdd_inp.hidden = false;
             billCity_inp.hidden = false;
