@@ -274,7 +274,7 @@ async function post_chkout() {
         return res.json();
       })
       .then(data => {
-        return data;
+        return data.response;
       });
   // ---------Logging---------
   console.log("postPayload_dataObj= ", cObj_postPayload);
@@ -283,8 +283,19 @@ async function post_chkout() {
   // ---------get 'providerName and methodName' to redirect respectively---------
   let oLocation = '';
   const {providerName, methodName} = cObj_postPayload;
-  // // if (providerName === 'AYA')
-  // // location.assign("http://www.mozilla.org");
+  const {amount, formToken} = obj_resD;
+  // if (
+  // (providerName === 'KBZ' && methodName === 'PWA')
+  // || (providerName === 'KBZ Direct Pay' && methodName === 'PWA')
+  // || (providerName === 'Wave Pay' && methodName === 'PIN')
+  // || (providerName === 'Citizens' && methodName === 'PIN')
+  // || (providerName === 'Mytel' && methodName === 'PIN')
+  // || (providerName === 'MAB Bank' && methodName === 'OTP')
+  // )
+  //   location.assign(` https://portal.dinger.asia/gateway/redirect?
+  //   transactionNo={transactionNo}
+  //   &formToken={formToken}
+  //   &merchantOrderId={merchantOrderId} `);
   console.log(JSON.stringify(cObj_postPayload, null, " "));
 }
 const getRandomIntInclusive = (min, max) => {
