@@ -5,8 +5,8 @@ const objects = {
     pubKey: "-----BEGIN PUBLIC KEY-----\n"+
     "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCil81JlfqDrdXNKbKmv6pPbPPs6p/qWhtFldNBP3mjtroC2TrPEeNQXnNf23Ijvwlsf07V8eHDEd9j05A2B56OaTwsgOgaaSHjSA6tinbKmyxllAxzAWGF37+ice0ts13HYNXGsLGqYTREzF+IDKWEKcwmey4tmufxPQA/vrTEAQIDAQAB"+
     "-----END PUBLIC KEY-----",
+    // // payHttpPostMIME: 'multipart/form-data',
     payHttpPostMIME: 'application/x-www-form-urlencoded',
-
 }
 
 export default objects;

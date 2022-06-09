@@ -211,6 +211,7 @@ async function post_chkout() {
   const ema_val = email_inp.value;
   const ba_val = billAdd_inp.value;
   const bc_val = billCity_inp.value;
+  // ---------Create Validation against formFieldMissing & legitFieldSelectable---------
   // if user doesn't select any, show hidden warning.
   if (
     !(cart.length)
@@ -232,10 +233,10 @@ async function post_chkout() {
     return;
   }
   hidInvalidWarn.hidden = true;
-  // get 'const' orderId & calculatedTotal.
+  // ---------Create orderId & calculatedTotal---------
   const orderId = getRandomIntInclusive(0,10000);
   const total = getTtlOfCalcPricesQty(cart);
-  // create 'obj' postPayload.
+  // ---------Create 'obj' postPayload---------
   const cObj_postPayload = {
     providerName: typ_val,
     methodName: mtd_val,
@@ -245,9 +246,9 @@ async function post_chkout() {
     description: des_val ?? '',
     customerAddress: add_val ?? '',
     totalAmount: total,
-    Items: cart
+    items: JSON.stringify(cart, null, " ")
   };
-
+  // ---------Node RSA encryption---------
   const nodersa = new NodeRSA();
   nodersa.importKey(constants.pubKey, 'pkcs8-public');
   // (keyData, [format])
@@ -258,17 +259,15 @@ async function post_chkout() {
   // output_type = 'pem' — Base64 encoded with header and footer. Used by default, 'der' — Binary encoded key data.
   nodersa.setOptions({encryptionScheme: 'pkcs1'});
   // .encrypt alrdy provide Json.stringify to first arg, buffer. Second arg is encoding for output.
-  const payload = nodersa.encrypt(cObj_postPayload,'base64');
-
-  console.log("postPayload_dataObj: ", cObj_postPayload);
-  console.log("payload: "+payload);
-  // get 'token' to send in header field.
+  const encryptstr_payload = nodersa.encrypt(cObj_postPayload,'base64');
+  // ---------Get 'token' to send in post header authentication---------
   jsonStr_getTok = constants.getToken ?? await get_authToken() ?? null;
-  // appending 'base64' encoding as form field in body.
-  // const fd = new FormData();
-  // fd.append('', "payload="+payload);
+  // ---------Encrypted object in the body of post as KV&KV queryString---------
+  const paramObj = {payload: encryptstr_payload};
+  const data = new URLSearchParams(paramObj);
   const obj_resD = await sendHttpReq("POST"
-    ,constants.payApi, {payload: "payload="+payload
+      ,constants.payApi
+      ,{payload: data
       ,contType: constants.payHttpPostMIME
       ,bearerToken: jsonStr_getTok})
       .then(res => {
@@ -277,8 +276,11 @@ async function post_chkout() {
       .then(data => {
         return data;
       });
-  console.log(obj_resD);
-  // get 'providerName and methodName' to redirect respectively.
+  // ---------Logging---------
+  console.log("postPayload_dataObj= ", cObj_postPayload);
+  console.log("payload= ", encryptstr_payload);
+  console.log("promise= ", obj_resD);
+  // ---------get 'providerName and methodName' to redirect respectively---------
   let oLocation = '';
   const {providerName, methodName} = cObj_postPayload;
   // // if (providerName === 'AYA')
@@ -323,16 +325,16 @@ const create_ordLst = () => {
       + ',' + meat_val
       + ',' + nood_val
       + ',' + dishCustom_val ?? 'No Customization'};
-  // read 'name' to get price.
+  // read 'name' to get priceStr.
   const md_type = cObj_md.name.split(',')[0];
-  let price;
-  if (md_type === "Sichat") { price = 1500; }
-  else if (md_type === "KyayOh") { price = 4000; }
-  else if (md_type === "KyayOh Sichat") { price = 4300; }
+  let priceStr;
+  if (md_type === "Sichat") { priceStr = "1500"; }
+  else if (md_type === "KyayOh") { priceStr = "4000"; }
+  else if (md_type === "KyayOh Sichat") { priceStr = "4300"; }
   // create 'obj' items.
   const cObj_itemsField = {
     ... cObj_md
-    , amount  : price
+    , amount  : priceStr
     , quantity: numberofplates_val};
   // if 'check' cart contain zero type.
   if (cart.length == 0) cart.push(cObj_itemsField);
@@ -345,7 +347,7 @@ const create_ordLst = () => {
 
       const replacinObj = {
         ... cObj_md
-        , amount  : price
+        , amount  : priceStr
         , quantity: noofplates_Inc};
       cart.push(replacinObj);
     }
