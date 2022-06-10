@@ -1,9 +1,10 @@
 const NodeRSA = require('node-rsa');            // Commonjs_Module
 import constants from './constants/apiIntePcs_Const';   // ES_Module
-// DOMObj let and const variables
+// let and const htmlFormElements
 const md_sel = document.querySelector("#main_dish_div select");
 const meat_sel = document.querySelector("#choose_meat_div select");
 const nood_sel = document.querySelector("#choose_noodle_div select");
+const dCust_selDiv = document.querySelector("#option_customize_div");
 let dCust_sel = document.querySelector("#option_customize_div select")
 const noofplat_inp = document.querySelector("#quantity_div input")
 const alertList = document.querySelector("#frm1_checkout button");
@@ -17,101 +18,12 @@ const typ_sel = document.querySelector(".field6 select");
 const mtd_sel = document.querySelector(".field7 select");
 const add_inp = document.querySelector(".field3 input");
 const des_inp = document.querySelector(".field4 input");
+const email_inpDiv = document.querySelector(".field8");
+const billAdd_inpDiv = document.querySelector(".field9");
+const billCity_inpDiv = document.querySelector(".field10");
 const email_inp = document.querySelector(".field8 input");
 const billAdd_inp = document.querySelector(".field9 input");
 const billCity_inp = document.querySelector(".field10 input");
-// functional Events
-document.addEventListener("DOMContentLoaded", () => {
-  const mdId_sel = document.querySelector("#main_dish");  //doesn't work with main_dish-div select.
-  mdId_sel.addEventListener("change", e => {
-    const dCust_sel = document.querySelector("#option_customize_div");//doesn't work with option_customize.
-    if ( e.target.options[e.target.options.selectedIndex].text == "--Choose Menu--"
-    ) {
-      dCust_sel.hidden = true;
-      return;
-    } else if ( e.target.options[e.target.options.selectedIndex].text == "Sichat"
-    ) {
-      dCust_sel.hidden = true;
-    } else {
-      dCust_sel.hidden = false;
-    }
-  });
-
-  const typId_sel = document.querySelector("#payment_type");
-  const mtdId_sel = document.querySelector("#payment_method");
-  const email_inp = document.querySelector("#em");
-  const billAdd_inp = document.querySelector("#ba");
-  const billCity_inp = document.querySelector("#bc");
-  typId_sel.addEventListener("change", e => {
-    email_inp.hidden = true;
-    billAdd_inp.hidden = true;
-    billCity_inp.hidden = true;
-    mtdId_sel.selectedIndex = 0;
-    const mtdId_htmlOptCol = mtdId_sel.options;
-    if ( e.target.options[e.target.options.selectedIndex].text === "Visa"
-      || e.target.options[e.target.options.selectedIndex].text === "JCB"
-      || e.target.options[e.target.options.selectedIndex].text === "Master") {
-            email_inp.hidden = false;
-            billAdd_inp.hidden = false;
-            billCity_inp.hidden = false;
-            Array.from(mtdId_htmlOptCol).map(opt => {
-              if (opt.value === "QR") opt.disabled = true;
-              if (opt.value === "PIN") opt.disabled = true;
-              if (opt.value === "PWA") opt.disabled = true;
-              if (opt.value === "OTP") opt.disabled = false; //correct
-            })
-    }
-    if ( e.target.options[e.target.options.selectedIndex].text === "WAVE PAY"
-      || e.target.options[e.target.options.selectedIndex].text === "Citizens"
-      || e.target.options[e.target.options.selectedIndex].text === "Mytel"
-      || e.target.options[e.target.options.selectedIndex].text === "Sai Sai Pay"
-      || e.target.options[e.target.options.selectedIndex].text === "Onepay"
-      || e.target.options[e.target.options.selectedIndex].text === "MPitesan") {
-            Array.from(mtdId_htmlOptCol).map(opt => {
-              if (opt.value === "QR") opt.disabled = true;
-              if (opt.value === "OTP") opt.disabled = true;
-              if (opt.value === "PWA") opt.disabled = true;
-              if (opt.value === "PIN") opt.disabled = false;
-            })
-    }
-    if ( e.target.options[e.target.options.selectedIndex].text === "KBZ Direct Pay") {
-            Array.from(mtdId_htmlOptCol).map(opt => {
-              if (opt.value === "QR") opt.disabled = true;
-              if (opt.value === "OTP") opt.disabled = true;
-              if (opt.value === "PIN") opt.disabled = true;
-              if (opt.value === "PWA") opt.disabled = false;
-            })
-    }
-    if ( e.target.options[e.target.options.selectedIndex].text === "AYA Pay") {
-            Array.from(mtdId_htmlOptCol).map(opt => {
-              if (opt.value === "OTP") opt.disabled = true;
-              if (opt.value === "PWA") opt.disabled = true;
-              if (opt.value === "QR") opt.disabled = false;
-              if (opt.value === "PIN") opt.disabled = false;
-            })
-    }
-    if ( e.target.options[e.target.options.selectedIndex].text === "KBZ Pay") {
-            Array.from(mtdId_htmlOptCol).map(opt => {
-              if (opt.value === "OTP") opt.disabled = true;
-              if (opt.value === "PIN") opt.disabled = true;
-              if (opt.value === "QR") opt.disabled = false;
-              if (opt.value === "PWA") opt.disabled = false;
-            })
-    }
-  });
-});
-addtoListfrm.addEventListener("click", event => {
-  event.preventDefault();
-  create_ordLst();
-});
-alertList.addEventListener("click", event => {
-  event.preventDefault();
-  alert(JSON.stringify(cart, null, " "));
-});
-submitfrm2.addEventListener("click", event => {
-  event.preventDefault();
-  post_chkout();
-});
 // global let variables & templates
 let cart = [];
 let addingToCardCountStart = 0;
@@ -156,7 +68,100 @@ const rTmpl_flds = {
     PWA: 'PWA',
   },
 }
-// functions
+// Click EventListeners
+document.addEventListener("DOMContentLoaded", () => {
+  md_sel.addEventListener("change", e => {
+    // ---------Update dish selected index change---------
+    if ( e.target.options[e.target.options.selectedIndex].text == "--Choose Menu--"
+    || e.target.options[e.target.options.selectedIndex].text == "Sichat"
+    ) {
+      dCust_selDiv.hidden = true;
+      return;
+    } else {
+      dCust_selDiv.hidden = false;
+    }
+  });
+  // ---------Update business selected index change---------
+  typ_sel.addEventListener("change", e => {
+    email_inpDiv.hidden = true;
+    billAdd_inpDiv.hidden = true;
+    billCity_inpDiv.hidden = true;
+    mtd_sel.selectedIndex = 0;
+    const mtd_htmlOptCol = mtd_sel.options;
+    if ( e.target.options[e.target.options.selectedIndex].text === "Visa"
+      || e.target.options[e.target.options.selectedIndex].text === "JCB"
+      || e.target.options[e.target.options.selectedIndex].text === "Master") {
+    console.log("typ_sel changed. ", e.target.options[e.target.options.selectedIndex].text);
+            email_inpDiv.hidden = false;
+            billAdd_inpDiv.hidden = false;
+            billCity_inpDiv.hidden = false;
+            Array.from(mtd_htmlOptCol).map(opt => {
+              if (opt.value === "QR") opt.disabled = true;
+              if (opt.value === "PIN") opt.disabled = true;
+              if (opt.value === "PWA") opt.disabled = true;
+              if (opt.value === "OTP") opt.disabled = false;    //correct
+            })
+    }
+    if ( e.target.options[e.target.options.selectedIndex].text === "MPU") {
+            Array.from(mtd_htmlOptCol).map(opt => {
+              if (opt.value === "QR") opt.disabled = true;
+              if (opt.value === "PIN") opt.disabled = true;
+              if (opt.value === "PWA") opt.disabled = true;
+              if (opt.value === "OTP") opt.disabled = false;    //correct
+            })
+    }
+    if ( e.target.options[e.target.options.selectedIndex].text === "WAVE PAY"
+      || e.target.options[e.target.options.selectedIndex].text === "Citizens"
+      || e.target.options[e.target.options.selectedIndex].text === "Mytel"
+      || e.target.options[e.target.options.selectedIndex].text === "Sai Sai Pay"
+      || e.target.options[e.target.options.selectedIndex].text === "Onepay"
+      || e.target.options[e.target.options.selectedIndex].text === "MPitesan") {
+            Array.from(mtd_htmlOptCol).map(opt => {
+              if (opt.value === "QR") opt.disabled = true;
+              if (opt.value === "OTP") opt.disabled = true;
+              if (opt.value === "PWA") opt.disabled = true;
+              if (opt.value === "PIN") opt.disabled = false;    //correct
+            })
+    }
+    if ( e.target.options[e.target.options.selectedIndex].text === "KBZ Direct Pay") {
+            Array.from(mtd_htmlOptCol).map(opt => {
+              if (opt.value === "QR") opt.disabled = true;
+              if (opt.value === "OTP") opt.disabled = true;
+              if (opt.value === "PIN") opt.disabled = true;
+              if (opt.value === "PWA") opt.disabled = false;    //correct
+            })
+    }
+    if ( e.target.options[e.target.options.selectedIndex].text === "AYA Pay") {
+            Array.from(mtd_htmlOptCol).map(opt => {
+              if (opt.value === "OTP") opt.disabled = true;
+              if (opt.value === "PWA") opt.disabled = true;
+              if (opt.value === "QR") opt.disabled = false;     //correct
+              if (opt.value === "PIN") opt.disabled = false;    //correct
+            })
+    }
+    if ( e.target.options[e.target.options.selectedIndex].text === "KBZ Pay") {
+            Array.from(mtd_htmlOptCol).map(opt => {
+              if (opt.value === "OTP") opt.disabled = true;
+              if (opt.value === "PIN") opt.disabled = true;
+              if (opt.value === "QR") opt.disabled = false;     //correct
+              if (opt.value === "PWA") opt.disabled = false;    //correct
+            })
+    }
+  });
+});
+addtoListfrm.addEventListener("click", event => {
+  event.preventDefault();
+  create_ordLst();
+});
+alertList.addEventListener("click", event => {
+  event.preventDefault();
+  alert(JSON.stringify(cart, null, " "));
+});
+submitfrm2.addEventListener("click", event => {
+  event.preventDefault();
+  post_chkout();
+});
+// Main Functions
 const sendHttpReq = async (method, url, {payload, contType = "application/json", bearerToken} = {}) => {
   return await fetch(url, {
     method,
@@ -167,18 +172,21 @@ const sendHttpReq = async (method, url, {payload, contType = "application/json",
     },
   })
   .then(resp => {
-      if (resp.status < 200 && resp.status >= 300) {
+      if( (resp.status < 200 && resp.status >= 300)
+      || !resp.ok) {
         return new Promise(() => {
           throw new Error(
-            "Something went wrong between you sent and server receiving"
+            "Something went wrong between you sent and server receiving. "
+            +"Responsed message: "+resp.message
         )});
       }
       return resp;
   })
   .then(resp => {
-      if(resp.code == "000" || resp.ok) {
-        return resp;
-      } //guard clause
+    breakOk: if(resp.ok) {   //guard clause
+        if ( resp.code && resp.code !== "000") { break breakOk; }
+        return resp.json();
+      }
       return new Promise(() => {
         throw new Error(
           " server responsed with backend error code: " +
@@ -194,9 +202,6 @@ const sendHttpReq = async (method, url, {payload, contType = "application/json",
 async function get_authToken() {
   return await sendHttpReq("GET"
     ,constants.getApi)
-  .then(res => {
-    return res.json();
-  })
   .then(prmInJson => {
     return prmInJson.response.paymentToken });
 }
@@ -236,7 +241,7 @@ async function post_chkout() {
   // ---------Create orderId & calculatedTotal---------
   const orderId = getRandomIntInclusive(0,10000);
   const total = getTtlOfCalcPricesQty(cart);
-  // ---------Create 'obj' postPayload---------
+  // ---------Create 'obj' postPayload or more fields to add to payload for Visa, Master, JCB---------
   const cObj_postPayload = {
     providerName: typ_val,
     methodName: mtd_val,
@@ -248,6 +253,19 @@ async function post_chkout() {
     totalAmount: total,
     items: JSON.stringify(cart, null, " ")
   };
+  const {providerName} = cObj_postPayload;
+  if ( !(
+    (providerName === 'Visa')
+    || (providerName === 'Master' )
+    || (providerName === 'JCB' )
+  )) {
+    cObj_postPayload = {
+      ...cObj_postPayload,
+      email: ema_val,
+      billAddress: ba_val,
+      billCity: bc_val
+    }
+  }
   // ---------Node RSA encryption---------
   const nodersa = new NodeRSA();
   nodersa.importKey(constants.pubKey, 'pkcs8-public');
@@ -265,39 +283,36 @@ async function post_chkout() {
   // ---------Encrypted object in the body of post as KV&KV queryString---------
   const paramObj = {payload: encryptstr_payload};
   const data = new URLSearchParams(paramObj);
-  const obj_resD = await sendHttpReq("POST"
+  const strJson_resD = await sendHttpReq("POST"
       ,constants.payApi
       ,{payload: data
       ,contType: constants.payHttpPostMIME
       ,bearerToken: jsonStr_getTok})
-      .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        return data.response;
-      });
   // ---------Logging---------
   console.log("postPayload_dataObj= ", cObj_postPayload);
   console.log("payload= ", encryptstr_payload);
-  console.log("promise= ", obj_resD);
+  console.log("promise= ", strJson_resD);
   // ---------get 'providerName and methodName' to redirect respectively---------
   let oLocation = '';
-  const {providerName, methodName} = cObj_postPayload;
-  const {amount, formToken} = obj_resD;
-  // if (
-  // (providerName === 'KBZ' && methodName === 'PWA')
-  // || (providerName === 'KBZ Direct Pay' && methodName === 'PWA')
-  // || (providerName === 'Wave Pay' && methodName === 'PIN')
-  // || (providerName === 'Citizens' && methodName === 'PIN')
-  // || (providerName === 'Mytel' && methodName === 'PIN')
-  // || (providerName === 'MAB Bank' && methodName === 'OTP')
-  // )
-  //   location.assign(` https://portal.dinger.asia/gateway/redirect?
-  //   transactionNo={transactionNo}
-  //   &formToken={formToken}
-  //   &merchantOrderId={merchantOrderId} `);
-  console.log(JSON.stringify(cObj_postPayload, null, " "));
+  const strJson_res = strJson_resD.response;
+  if (
+  (providerName === 'KBZ' && methodName === 'PWA')
+  || (providerName === 'KBZ Direct Pay' && methodName === 'PWA')
+  || (providerName === 'Wave Pay' && methodName === 'PIN')
+  || (providerName === 'Citizens' && methodName === 'PIN')
+  || (providerName === 'Mytel' && methodName === 'PIN')
+  || (providerName === 'MAB Bank' && methodName === 'OTP')
+  ) {
+    const {transactionNum, formToken, merchOrderId} = strJson_res;
+      location.assign(` https://portal.dinger.asia/gateway/redirect?
+      transactionNo=${transactionNum}
+      &formToken=${formToken}
+      &merchantOrderId=${merchOrderId} `);
+    
+    console.log(transactionNum, formToken, merchOrderId);
+  }
 }
+// Auxillary Functions
 const getRandomIntInclusive = (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -389,8 +404,6 @@ const getElOfTheOrderAlrdyContain = (obj, list) => {
     t.name === obj.name
   );
 }
-// // import * as NodeRSA from '../node_modules/node-rsa/src/NodeRSA.js';
-// //'application/x-www-form-urlencoded'
 // // let cartItem = {
 // //   objec: {},
 // //   get getGetter() {
@@ -405,5 +418,3 @@ const getElOfTheOrderAlrdyContain = (obj, list) => {
 // //     !Array.isArray(obj) &&
 // //     obj !== null);
 // // }
-// // console.log(md_val, meat_val, nood_val, dishCustom_val, numberofplates_val);
-// // console.log(JSON.stringify(cart, null, " "));
