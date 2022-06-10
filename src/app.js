@@ -102,7 +102,8 @@ document.addEventListener("DOMContentLoaded", () => {
               if (opt.value === "OTP") opt.disabled = false;    //correct
             })
     }
-    if ( e.target.options[e.target.options.selectedIndex].text === "MPU") {
+    if ( e.target.options[e.target.options.selectedIndex].text === "MPU"
+      || e.target.options[e.target.options.selectedIndex].text === "MAB Bank" ) {
             Array.from(mtd_htmlOptCol).map(opt => {
               if (opt.value === "QR") opt.disabled = true;
               if (opt.value === "PIN") opt.disabled = true;
@@ -145,6 +146,14 @@ document.addEventListener("DOMContentLoaded", () => {
               if (opt.value === "PIN") opt.disabled = true;
               if (opt.value === "QR") opt.disabled = false;     //correct
               if (opt.value === "PWA") opt.disabled = false;    //correct
+            })
+    }
+    if ( e.target.options[e.target.options.selectedIndex].text === "CB Pay") {
+            Array.from(mtd_htmlOptCol).map(opt => {
+              if (opt.value === "OTP") opt.disabled = true;
+              if (opt.value === "PIN") opt.disabled = true;
+              if (opt.value === "PWA") opt.disabled = true;
+              if (opt.value === "QR") opt.disabled = false;     //correct
             })
     }
   });
@@ -242,7 +251,7 @@ async function post_chkout() {
   const orderId = getRandomIntInclusive(0,10000);
   const total = getTtlOfCalcPricesQty(cart);
   // ---------Create 'obj' postPayload or more fields to add to payload for Visa, Master, JCB---------
-  const cObj_postPayload = {
+  let cObj_postPayload = {
     providerName: typ_val,
     methodName: mtd_val,
     orderId: orderId + '',
@@ -253,12 +262,12 @@ async function post_chkout() {
     totalAmount: total,
     items: JSON.stringify(cart, null, " ")
   };
-  const {providerName} = cObj_postPayload;
-  if ( !(
+  const {providerName, methodName} = cObj_postPayload;
+  if (
     (providerName === 'Visa')
     || (providerName === 'Master' )
     || (providerName === 'JCB' )
-  )) {
+  ) {
     cObj_postPayload = {
       ...cObj_postPayload,
       email: ema_val,
@@ -293,23 +302,51 @@ async function post_chkout() {
   console.log("payload= ", encryptstr_payload);
   console.log("promise= ", strJson_resD);
   // ---------get 'providerName and methodName' to redirect respectively---------
-  let oLocation = '';
+  // // let oLocation = '';
   const strJson_res = strJson_resD.response;
+  const {transactionNum, formToken, merchOrderId} = strJson_res;
+  alert(transactionNum+" "+ formToken+" "+ merchOrderId);
   if (
-  (providerName === 'KBZ' && methodName === 'PWA')
+  (providerName === 'KBZ Pay' && methodName === 'PWA')
   || (providerName === 'KBZ Direct Pay' && methodName === 'PWA')
   || (providerName === 'Wave Pay' && methodName === 'PIN')
   || (providerName === 'Citizens' && methodName === 'PIN')
   || (providerName === 'Mytel' && methodName === 'PIN')
   || (providerName === 'MAB Bank' && methodName === 'OTP')
   ) {
-    const {transactionNum, formToken, merchOrderId} = strJson_res;
-      location.assign(` https://portal.dinger.asia/gateway/redirect?
-      transactionNo=${transactionNum}
-      &formToken=${formToken}
-      &merchantOrderId=${merchOrderId} `);
-    
-    console.log(transactionNum, formToken, merchOrderId);
+    location.assign(` https://portal.dinger.asia/gateway/redirect?
+    transactionNo=${transactionNum}
+    &formToken=${formToken}
+    &merchantOrderId=${merchOrderId} `);
+  }
+  if ( (providerName === 'MPitesan' && methodName === 'PIN') ) {
+    location.assign(` https://portal.dinger.asia/gateway/mpitesan?
+    transactionNo=${transactionNum}
+    &formToken=${formToken}
+    &merchantOrderId=${merchOrderId} `);
+  }
+  if ( (providerName === 'CB Pay' && methodName === 'QR') ) {
+    location.assign(` https://portal.dinger.asia/gateway/cbpay?
+    transactionNo=${transactionNum}
+    &formToken=${formToken}
+    &merchantOrderId=${merchOrderId} `);
+  }
+  if (
+    (providerName === 'MPU' && methodName === 'OTP')
+  ) {
+    location.assign(` https://portal.dinger.asia/gateway/mpu?
+    transactionNum=${transactionNum}
+    &formToken=${formToken} `);
+  }
+  if (
+    (providerName === 'Visa')
+    || (providerName === 'Master' )
+    || (providerName === 'JCB' )
+  ) {
+    location.assign(` https://creditcard-portal.dinger.asia/?
+    merchantOrderId=${merchOrderId}
+    &transactionNum=${transactionNum}
+    &formToken=${formToken} `);
   }
 }
 // Auxillary Functions
