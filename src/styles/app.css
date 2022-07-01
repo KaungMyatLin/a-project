@@ -2,6 +2,33 @@
   color: rgba(244, 109, 109, 0.803);
 }
 
+/* button */
+#frm2_checkout button {
+  font-weight: bold;
+}
+.btn-custom {
+  border: 0px;
+  width: 100%;
+  font-family: "Helvetica Neue" !important;
+  background-color: #FDBE34 !important;
+}
+.btnGrp div[id*="frm1"] {
+  display: inline-block;
+  width: 45%;
+  margin: 1% auto;
+  vertical-align: middle;
+}
+.btnGrp {
+  text-align: center;
+}
+@media (min-width:768px) {
+  .btn-custom {
+    font-size: 1.5rem !important
+  }
+}
+/* /button */
+
+/* form container */
 .field1 div {
   display: inline-block;
   width: 45%;
@@ -9,119 +36,86 @@
   vertical-align: middle;
 }
 
-#frm2_checkout button {
-  font-weight: bold;
-}
-
-.btn-custom {
-  border: 0px;
-  width: 100%;
-  font-family: "Helvetica Neue" !important;
-  background-color: #FDBE34 !important;
-}
-
-.btnGrp div[id*="frm1"] {
-  display: inline-block;
-  width: 45%;
-  margin: 1% auto;
-  vertical-align: middle;
-}
-
-.btnGrp {
-  text-align: center;
-}
-
 form h2 {
   font-size: 1.2rem;
 }
-
 form h2,
 form div {
   margin: auto;
   width: 90%;
-  text-align: left;
 }
-
 .form {
   font-size: 1rem;
 }
-
 h1, h2 {
   font-weight: bold !important;
 }
+@media (min-width:768px) {
+  .form-control {
+    font-size: 1.3rem !important
+  }
+  form h2 {
+    font-size: 1.7rem;
+  }
+  .form {
+    font-size: 1.5rem;
+  }
+}
+/* /form container */
 
+/* big container */
 .divcontainer h1 {
   margin: auto;
+  margin-bottom: 1rem;
   width: 90%;
   font-size: 1.5rem;
   text-align: center;
   padding-top: 10px;
 }
-
 .divcontainer {
   margin: auto;
   background-color: #ffffff;
 }
+@media (min-width:768px) {
+  .divcontainer h1 {
+    margin: auto;
+    width: 62%;
+    font-size: 2rem;
+  }
+  .divcontainer {
+    margin: 0 8%;
+  }
+}
+/* /big container */
 
+/* header */
 .divheader-logo{
+  /* background: url(/images/dinger_logo.svg) center no-repeat; */
   margin: auto;
-  width: 10vw;
+  width:  10vh;
   height: 10vh;
 }
-
-.divheader-logo svg {
-  height: 100%;
-}
-
 header{
   padding: 1vh;
 }
+/* /header */
 
+/* general shared */
 .marginBtm {
   margin-bottom: 1rem;
 }
-
 label,
 input,
 textarea {
   display: block;
   margin: 0.5rem 0;
 }
-
 body {
   margin: 0;
   font-family: 'Montserrat', 'Sans-serif' !important;
   background-color: #fafafa !important;
 }
-
 * {
   box-sizing: border-box;
 }
-
-@media (min-width:768px) {
-  .btn-custom {
-    font-size: 1.5rem !important
-  }
-
-  .form-control {
-    font-size: 1.3rem !important
-  }
-
-  form h2 {
-    font-size: 1.7rem;
-  }
-
-  .form {
-    font-size: 1.5rem;
-  }
-
-  .divcontainer h1 {
-    margin: auto;
-    width: 62%;
-    font-size: 2rem;
-  }
-
-  .divcontainer {
-    margin: 0 8%;
-  }
-}
+/* /general shared */
