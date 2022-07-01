@@ -28,7 +28,6 @@
 }
 
 .btnGrp {
-  padding: 10px;
   text-align: center;
 }
 
@@ -79,7 +78,7 @@ header{
 }
 
 .marginBtm {
-  margin-bottom: 1%;
+  margin-bottom: 1rem;
 }
 
 label,
@@ -100,6 +99,10 @@ body {
 }
 
 @media (min-width:768px) {
+  .btn-custom {
+    font-size: 1.5rem !important
+  }
+
   .form-control {
     font-size: 1.3rem !important
   }
