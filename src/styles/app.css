@@ -2,22 +2,29 @@
   color: rgba(244, 109, 109, 0.803);
 }
 
-.flex-container {
-  display: flex;
-  background-color: whitesmoke; 
-  flex-direction: column;
-  align-items: center;
+.divcontainer h1 {
+  margin: auto;
+  width: 80%;
+  font-size: 1.3rem;
 }
 
-.flex-container form {
+.divcontainer {
+  margin: 0% 0%;
+  background-color: whitesmoke;
+}
+
+.divcontainer form {
   background-color: rgb(223, 255, 231);
-  width: 60%;
 }
 
 form #formTtl {
   width: 100%;
   font-size: 1.5rem;
   margin-bottom: 10px;
+}
+
+form h1 {
+  font-size: 1rem;
 }
 
 form .frmGrp {
@@ -28,7 +35,8 @@ form .frmGrp {
   margin-bottom: 1 rem;
 }
 
-.main-nav__item a:hover,
+/* nav bar */
+/* .main-nav__item a:hover,
 .main-nav__item a:active {
 	color: white;
 	border-bottom: 5px solid white;
@@ -89,7 +97,8 @@ form .frmGrp {
   width: 100%;
   background-color: #2ddf5c;
   padding: 8px 16px;
-}
+} */
+/* </nav bar> */
 
 label,
 input,
@@ -103,6 +112,18 @@ body {
   font-family: 'Montserrat', 'Sans-serif';
 }
 
-* { 
+* {
   box-sizing: border-box;
+}
+
+@media (min-width:768px) {
+  .divcontainer h1 {
+    margin: auto;
+    width: 50%;
+    font-size: 1.8rem;
+  }
+
+  .divcontainer {
+    margin: 0 10%;
+  }
 }

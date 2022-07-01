@@ -305,48 +305,52 @@ async function post_chkout() {
   // // let oLocation = '';
   const strJson_res = strJson_resD.response;
   const {transactionNum, formToken, merchOrderId} = strJson_res;
-  alert(transactionNum+" "+ formToken+" "+ merchOrderId);
+  // alert(transactionNum+" "+ formToken+" "+ merchOrderId);
   if (
   (providerName === 'KBZ Pay' && methodName === 'PWA')
   || (providerName === 'KBZ Direct Pay' && methodName === 'PWA')
-  || (providerName === 'Wave Pay' && methodName === 'PIN')
+  || (providerName === 'WAVE PAY' && methodName === 'PIN')
+  || (providerName === 'AYA Pay' && methodName === 'PIN')
   || (providerName === 'Citizens' && methodName === 'PIN')
   || (providerName === 'Mytel' && methodName === 'PIN')
   || (providerName === 'MAB Bank' && methodName === 'OTP')
   ) {
-    location.assign(` https://portal.dinger.asia/gateway/redirect?
-    transactionNo=${transactionNum}
-    &formToken=${formToken}
-    &merchantOrderId=${merchOrderId} `);
+    location.assign(` https://portal.dinger.asia/gateway/redirect?`+
+    `transactionNo=${transactionNum}`+
+    `&formToken=${formToken}`+
+    `&merchantOrderId=${merchOrderId} `);
   }
   if ( (providerName === 'MPitesan' && methodName === 'PIN') ) {
-    location.assign(` https://portal.dinger.asia/gateway/mpitesan?
-    transactionNo=${transactionNum}
-    &formToken=${formToken}
-    &merchantOrderId=${merchOrderId} `);
+    location.assign(` https://portal.dinger.asia/gateway/mpitesan?`+
+    `transactionNo=${transactionNum}`+
+    `&formToken=${formToken}`+
+    `&merchantOrderId=${merchOrderId} `);
   }
-  if ( (providerName === 'CB Pay' && methodName === 'QR') ) {
-    location.assign(` https://portal.dinger.asia/gateway/cbpay?
-    transactionNo=${transactionNum}
-    &formToken=${formToken}
-    &merchantOrderId=${merchOrderId} `);
+  if ( (providerName === 'CB Pay' && methodName === 'QR') 
+  || (providerName === 'AYA Pay' && methodName === 'QR') 
+  || (providerName === 'KBZ Pay' && methodName === 'QR') 
+  ) {
+    location.assign(` https://portal.dinger.asia/gateway/cbpay?`+
+    `transactionNo=${transactionNum}`+
+    `&formToken=${formToken}`+
+    `&merchantOrderId=${merchOrderId} `);
   }
   if (
     (providerName === 'MPU' && methodName === 'OTP')
   ) {
-    location.assign(` https://portal.dinger.asia/gateway/mpu?
-    transactionNum=${transactionNum}
-    &formToken=${formToken} `);
+    location.assign(` https://portal.dinger.asia/gateway/mpu?`+
+    `transactionNum=${transactionNum}`+
+    `&formToken=${formToken} `);
   }
   if (
     (providerName === 'Visa')
     || (providerName === 'Master' )
     || (providerName === 'JCB' )
   ) {
-    location.assign(` https://creditcard-portal.dinger.asia/?
-    merchantOrderId=${merchOrderId}
-    &transactionNum=${transactionNum}
-    &formToken=${formToken} `);
+    location.assign(` https://creditcard-portal.dinger.asia/?`+
+    `merchantOrderId=${merchOrderId}` +
+    `&transactionNum=${transactionNum}` +
+    `&formToken=${formToken} `);
   }
 }
 // Auxillary Functions
