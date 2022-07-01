@@ -2,11 +2,34 @@
   color: rgba(244, 109, 109, 0.803);
 }
 
-.field1 div {    
+.field1 div {
   display: inline-block;
   width: 45%;
-  vertical-align: middle;
   margin: 1% 1%;
+  vertical-align: middle;
+}
+
+#frm2_checkout button {
+  font-weight: bold;
+}
+
+.btn-custom {
+  border: 0px;
+  width: 100%;
+  font-family: "Helvetica Neue" !important;
+  background-color: #FDBE34 !important;
+}
+
+.btnGrp div[id*="frm1"] {
+  display: inline-block;
+  width: 45%;
+  margin: 1% auto;
+  vertical-align: middle;
+}
+
+.btnGrp {
+  padding: 10px;
+  text-align: center;
 }
 
 form h2 {
@@ -16,8 +39,8 @@ form h2 {
 form h2,
 form div {
   margin: auto;
+  width: 90%;
   text-align: left;
-  width: 90vw;
 }
 
 .form {
@@ -32,6 +55,8 @@ h1, h2 {
   margin: auto;
   width: 90%;
   font-size: 1.5rem;
+  text-align: center;
+  padding-top: 10px;
 }
 
 .divcontainer {
@@ -54,73 +79,8 @@ header{
 }
 
 .marginBtm {
-  margin-bottom: 1rem;
+  margin-bottom: 1%;
 }
-
-/* nav bar */
-/* .main-nav__item a:hover,
-.main-nav__item a:active {
-	color: white;
-	border-bottom: 5px solid white;
-}
-
-.main-nav__item a{
-	text-decoration: none;
-	color: #0e4f1f;
-	font-weight: bold;
-	padding: 3px 0;
-}
-
-.main-nav__item--cta a:hover,
-.main-nav__item--cta a:active {
-	color: #ff1b68;
-	background: white;
-	border: none;
-}
-
-.main-nav__item--cta a {
-	color: white;
-	background: #ff1b68;
-	padding: 8px 16px;
-	border-radius: 8px;
-}
-
-.main-nav__item {
-  display: inline-block;
-	margin: 0 16px;
-}
-
-.main-nav__items {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.main-nav {
-	display: inline-block;
-	text-align: right;
-	width: calc(100% - 74px);
-	vertical-align: middle;
-}
-
-.main-header__brand {
-	color: #0e4f1f;
-	text-decoration: none;
-	font-weight: bold;
-	font-size: 22;
-}
-
-.main-header > div {
-  display: inline-block;
-	vertical-align: middle;
-}
-
-.main-header {
-  width: 100%;
-  background-color: #2ddf5c;
-  padding: 8px 16px;
-} */
-/* </nav bar> */
 
 label,
 input,
@@ -132,7 +92,7 @@ textarea {
 body {
   margin: 0;
   font-family: 'Montserrat', 'Sans-serif' !important;
-  background-color: #fafafa;
+  background-color: #fafafa !important;
 }
 
 * {
@@ -140,16 +100,25 @@ body {
 }
 
 @media (min-width:768px) {
+  .form-control {
+    font-size: 1.3rem !important
+  }
+
+  form h2 {
+    font-size: 1.7rem;
+  }
+
+  .form {
+    font-size: 1.5rem;
+  }
+
   .divcontainer h1 {
     margin: auto;
     width: 62%;
-    font-size: 1.8rem;
-    padding: 1%;
-    text-align: center;
+    font-size: 2rem;
   }
 
   .divcontainer {
-    margin: 0 10%;
-    background-color: whitesmoke;
+    margin: 0 8%;
   }
 }

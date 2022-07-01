@@ -12,20 +12,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous"> 
 </head>
 <body>
-    <!-- <header class="main-header">
-        <div><a href="#" class="main-header__brand">Dinger</a></div>
-        <nav class="main-nav">
-            <ul class="main-nav__items">
-                <li class="main-nav__item">
-                    <a href="#">Login</a>
-                </li>
-                <li class="main-nav__item main-nav__item--cta">
-                    <a href="#">Sign up</a>
-                </li>
-            </ul>
-        </nav>
-    </header> -->
-    <header>
+    <header class="marginBtm">
         <div class="divheader-logo">
             <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                 viewBox="0 0 689.18 763.32" style="enable-background:new 0 0 689.18 763.32;" xml:space="preserve">
@@ -125,14 +112,14 @@
         </div>
     </header>
     <div class="divcontainer">
-        <h1>Dinger Payment Form</h1>
+        <h1 class="marginBtm">Dinger Payment Form</h1>
 
         <br>
 
-        <form accept-charset="UTF-8" id="form1" class="form">
-            <h2>Dish Fill Form</h2>
+        <form accept-charset="UTF-8" id="form1" class="form marginBtm">
+            <h2 class="marginBtm">Dish Fill Form</h2>
 
-            <div class="frmGrp marginBtm" id="main_dish_div">
+            <div class="marginBtm" id="main_dish_div">
                 <label for="main_dish">Main Dish <span style="color: red !important; display: inline; float: none;">*</span> </label>
                 <select id="main_dish" name="payment" class="form-control" required>
                     <option value="0" selected>
@@ -149,7 +136,7 @@
                     </option>
                 </select>
             </div>
-            <div class="frmGrp marginBtm" id="choose_meat_div">
+            <div class="marginBtm" id="choose_meat_div">
                 <label for="choose_meat">Choose Meat <span style="color: red !important; display: inline; float: none;">*</span> </label>
                 <select id="choose_meat" name="payment" class="form-control" required>
                     <option value="0" selected>
@@ -163,7 +150,7 @@
                     </option>
                 </select>
             </div>
-            <div class="frmGrp marginBtm" id="choose_noodle_div">
+            <div class="marginBtm" id="choose_noodle_div">
                 <label selected for="choose_noodle">Choose Noodle <span style="color: red !important; display: inline; float: none;">*</span> </label>
                 <select id="choose_noodle" name="payment" class="form-control" required>
                     <option value="0" selected>
@@ -177,7 +164,7 @@
                     </option>
                 </select>
             </div>
-            <div class="frmGrp marginBtm" hidden id="option_customize_div">
+            <div class="marginBtm" hidden id="option_customize_div">
                 <label selected for="option_customize">Dish Customization </label>
                 <select id="option_customize" name="option-customize" class="form-control">
                     <option value="0" selected>
@@ -194,24 +181,26 @@
                     </option>
                 </select>
             </div>
-            <div class="frmGrp marginBtm" id="quantity_div">
+            <div class="marginBtm" id="quantity_div">
                 <label selected for="quantity">Quantity <span style="color: red !important; display: inline; float: none;">*</span> </label>
                 <input placeholder="99" id="quantity" type="number"  class="form-control" min="0" max="99" minlength="1" maxlength="2" value="0" required>
             </div>
-            <div class="frmGrp marginBtm" id="frm1_done">
-                <button type="button">Add to List</button>
-            </div>
-            <div class="frmGrp marginBtm" id="frm1_checkout">
-                <button type="submit">Show List</button>
+            <div class="btnGrp">
+                <div class="marginBtm" id="frm1_done">
+                    <button type="button" class="btn btn-custom">Add to List</button>
+                </div>
+                <div class="marginBtm" id="frm1_checkout">
+                    <button type="submit" class="btn btn-custom">Show List</button>
+                </div>
             </div>
         </form>
 
         <br>
 
-        <form accept-charset="UTF-8"" id="form2" class="form">
-            <h2>Personal Information</h2>
+        <form accept-charset="UTF-8"" id="form2" class="form marginBtm">
+            <h2 class="marginBtm">Personal Information</h2>
 
-            <div class="frmGrp marginBtm field1">
+            <div class="marginBtm field1">
                 <div >
                     <label>First Name <span style="color: red !important; display: inline; float: none;">*</span></label>
                     <input placeholder="Enter your first name" name="fname" type="text" class="form-control" style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABHklEQVQ4EaVTO26DQBD1ohQWaS2lg9JybZ+AK7hNwx2oIoVf4UPQ0Lj1FdKktevIpel8AKNUkDcWMxpgSaIEaTVv3sx7uztiTdu2s/98DywOw3Dued4Who/M2aIx5lZV1aEsy0+qiwHELyi+Ytl0PQ69SxAxkWIA4RMRTdNsKE59juMcuZd6xIAFeZ6fGCdJ8kY4y7KAuTRNGd7jyEBXsdOPE3a0QGPsniOnnYMO67LgSQN9T41F2QGrQRRFCwyzoIF2qyBuKKbcOgPXdVeY9rMWgNsjf9ccYesJhk3f5dYT1HX9gR0LLQR30TnjkUEcx2uIuS4RnI+aj6sJR0AM8AaumPaM/rRehyWhXqbFAA9kh3/8/NvHxAYGAsZ/il8IalkCLBfNVAAAAABJRU5ErkJggg==&quot;); background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%;">
@@ -221,15 +210,15 @@
                     <input placeholder="Enter your last name" name="lname" type="text" class="form-control">
                 </div>
             </div>
-            <div class="frmGrp marginBtm field2">
+            <div class="marginBtm field2">
                 <label>Phone <span style="color: red !important; display: inline; float: none;">*</span></label>
                 <input placeholder="eg. 09787747310" name="phone" type="tel" class="form-control">
             </div>
-            <div class="frmGrp marginBtm field3">
+            <div class="marginBtm field3">
                 <label>Address</label>
                 <input placeholder="eg. No(70)...." name="address" type="text" class="form-control">
             </div>
-            <div class="frmGrp marginBtm field4">
+            <div class="marginBtm field4">
                 <label>Description</label>
                 <input placeholder="eg. your description" name="desc" type="text" class="form-control">
             </div>
@@ -237,7 +226,7 @@
             <br>
 
             <h2 id="payment_type_div">For Payment</h2>
-            <div class="frmGrp marginBtm field6">
+            <div class="marginBtm field6">
                 <label for="payment_type">Choose Payment </label>
                 <select id="payment_type" name="payment" class="form-control">
                     <option value="0">Choose Payment</option>
@@ -258,7 +247,7 @@
                     <option value="KBZ Direct Pay">KBZ Direct Pay</option>
                 </select>
             </div>
-            <div id="payment_method_div" class="frmGrp marginBtm field7">
+            <div id="payment_method_div" class="marginBtm field7">
                 <label for="payment_method">Choose Payment Method </label>
                 <select id="payment_method" name="payment_method" class="form-control">
                     <option value="0">Choose Payment Method</option>
@@ -268,15 +257,15 @@
                     <option value="PWA" disabled="false">Pay with PWA</option>
                 </select>
             </div>
-            <div id="em" class="frmGrp marginBtm field8" hidden>
+            <div id="em" class="marginBtm field8" hidden>
                 <label for="email">Email</label>
                 <input placeholder="your email" name="email" type="text" class="form-control">
             </div>
-            <div id="ba" class="frmGrp marginBtm field9" hidden>
+            <div id="ba" class="marginBtm field9" hidden>
                 <label for="billAddress">Billing Address</label>
                 <input placeholder="your billing Address" name="billAddress" type="text" class="form-control">
             </div>
-            <div id="bc" class="frmGrp marginBtm field10" hidden>
+            <div id="bc" class="marginBtm field10" hidden>
                 <label for="billCity">Billing City</label>
                 <input placeholder="your billing City" name="billCity" type="text" class="form-control">
             </div>
@@ -284,8 +273,8 @@
                 <label> <span style="color: red !important; display: inline; float: none;"> Please input/ select all fields marked by {*}</span> 
                 </label>
             </div>
-            <div class="frmGrp marginBtm" id="frm2_checkout">
-                <button type="submit">Submit</button>
+            <div class="marginBtm" id="frm2_checkout">
+                <button type="submit" class="btn btn-custom">Submit</button>
             </div>
 
         </form>
