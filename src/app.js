@@ -310,7 +310,7 @@ async function post_chkout() {
   (providerName === 'KBZ Pay' && methodName === 'PWA')
   || (providerName === 'KBZ Direct Pay' && methodName === 'PWA')
   || (providerName === 'WAVE PAY' && methodName === 'PIN')
-  || (providerName === 'AYA Pay' && methodName === 'PIN')
+  // || (providerName === 'AYA Pay' && methodName === 'PIN')
   || (providerName === 'Citizens' && methodName === 'PIN')
   || (providerName === 'Mytel' && methodName === 'PIN')
   || (providerName === 'MAB Bank' && methodName === 'OTP')
@@ -327,8 +327,8 @@ async function post_chkout() {
     `&merchantOrderId=${merchOrderId} `);
   }
   if ( (providerName === 'CB Pay' && methodName === 'QR')
-  || (providerName === 'AYA Pay' && methodName === 'QR')
-  || (providerName === 'KBZ Pay' && methodName === 'QR')
+  // || (providerName === 'AYA Pay' && methodName === 'QR')
+  // || (providerName === 'KBZ Pay' && methodName === 'QR')
   ) {
     location.assign(` https://portal.dinger.asia/gateway/cbpay?`+
     `transactionNo=${transactionNum}`+
