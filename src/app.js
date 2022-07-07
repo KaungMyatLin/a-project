@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
             })
     }
     if ( e.target.options[e.target.options.selectedIndex].text === "MPU"
-      || e.target.options[e.target.options.selectedIndex].text === "MAB Bank" ) {
+      || e.target.options[e.target.options.selectedIndex].text === "MAB" ) {
             Array.from(mtd_htmlOptCol).map(opt => {
               if (opt.value === "QR") opt.disabled = true;
               if (opt.value === "PIN") opt.disabled = true;
