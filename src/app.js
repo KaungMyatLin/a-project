@@ -50,7 +50,7 @@ const rTmpl_flds = {
     Visa: "Visa",
     Master: "Master",
     JCB: "JCB",
-    MAB: "MAB",
+    "MAB Bank": "MAB Bank",
     MPU: "MPU",
     "WAVE PAY": "WAVE PAY",
     Citizens: "Citizens",
@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
             })
     }
     if ( e.target.options[e.target.options.selectedIndex].text === "MPU"
-      || e.target.options[e.target.options.selectedIndex].text === "MAB" ) {
+      || e.target.options[e.target.options.selectedIndex].text === "MAB Bank" ) {
             Array.from(mtd_htmlOptCol).map(opt => {
               if (opt.value === "QR") opt.disabled = true;
               if (opt.value === "PIN") opt.disabled = true;
