@@ -11,11 +11,19 @@ const alertList = document.querySelector("#frm1_checkout button");
 const addtoListfrm = document.querySelector("#frm1_done button");
 const submitfrm2 = document.querySelector("#frm2_checkout button");
 let hidInvalidWarn = document.querySelector("#hidInvalidWarn")
+const fn_inp = document.querySelector(".fn input");
+const ln_inp = document.querySelector(".ln input");
+const ph_inp = document.querySelector(".field2 input");
 const typ_sel = document.querySelector(".field6 select");
 const mtd_sel = document.querySelector(".field7 select");
+const add_inp = document.querySelector(".field3 input");
+const des_inp = document.querySelector(".field4 input");
 const email_inpDiv = document.querySelector(".field8");
 const billAdd_inpDiv = document.querySelector(".field9");
 const billCity_inpDiv = document.querySelector(".field10");
+const email_inp = document.querySelector(".field8 input");
+const billAdd_inp = document.querySelector(".field9 input");
+const billCity_inp = document.querySelector(".field10 input");
 // global let variables & templates
 let cart = [];
 let addingToCardCountStart = 0;
@@ -207,16 +215,16 @@ async function get_authToken() {
     return prmInJson.response.paymentToken });
 }
 async function post_chkout() {
-  const fn_val = document.querySelector(".fn input").value;
-  const ln_val = document.querySelector(".ln input").value;
-  const ph_val = document.querySelector(".field2 input").value;
-  const typ_val = document.querySelector(".field6 select").value;
-  const mtd_val = document.querySelector(".field7 select").value;
-  const add_val = document.querySelector(".field3 input").value;
-  const des_val = document.querySelector(".field4 input").value;
-  const ema_val = document.querySelector(".field8 input").value;
-  const ba_val = document.querySelector(".field9 input").value;
-  const bc_val = document.querySelector(".field10 input").value;
+  const fn_val = fn_inp.value;
+  const ln_val = ln_inp.value;
+  const ph_val = ph_inp.value;
+  const typ_val = typ_sel.value;
+  const mtd_val = mtd_sel.value;
+  const add_val = add_inp.value;
+  const des_val = des_inp.value;
+  const ema_val = email_inp.value;
+  const ba_val = billAdd_inp.value;
+  const bc_val = billCity_inp.value;
   // ---------Create Validation against formFieldMissing & legitFieldSelectable---------
   // if user doesn't select any, show hidden warning.
   if (
